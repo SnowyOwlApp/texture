@@ -46,7 +46,7 @@ export default class FigurePanelConverter {
     if (contentEl) {
       node.content = importer.convertElement(contentEl).id
     }
-    node.caption = importer.convertElement(captionEl).id
+    node.caption = captionEl.children.map(child => importer.convertElement(captionEl).id)
     if (permissionsEl) {
       node.permission = importer.convertElement(permissionsEl).id
     } else {

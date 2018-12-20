@@ -33,12 +33,7 @@ export const XREF_TARGET_TYPES = Object.keys(REF_TYPES).reduce((m, type) => {
 })
 
 export function getXrefTargets (xref) {
-  let idrefs = xref.getAttribute('rid')
-  if (idrefs) {
-    return idrefs.split(' ')
-  } else {
-    return []
-  }
+  return xref.refTargets
 }
 
 export function getXrefLabel (xref) {

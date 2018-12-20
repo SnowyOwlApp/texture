@@ -1,4 +1,4 @@
-import { includes, EventEmitter } from 'substance'
+import { includes, EventEmitter, documentHelpers } from 'substance'
 
 export default class TOCProvider extends EventEmitter {
   constructor (articleSession, config) {
@@ -58,24 +58,26 @@ export default class TOCProvider extends EventEmitter {
   }
 
   computeEntries () {
+    // TODO: try to use model API here
+    // NOTE: this is not general anymore for sake of simplicity
     const doc = this.getDocument()
-    const config = this.config
+    const article = doc.get('article')
+
     let entries = []
 
     // Title is always there
     entries.push({
       id: 'title',
       name: 'Title',
-      level: 1,
-      node: doc.get('title')
+      level: 1
     })
 
     // Note: For abstract we need to find first text node
     // inside container to set selection there
-    const abstract = doc.find('abstract')
-    if (abstract.getChildCount() > 0) {
+    const abstract = doc.get('abstract')
+    if (abstract.content.length > 0) {
       let first = abstract.find('p')
-      if (first.getText()) {
+      if (first && first.getText()) {
         entries.push({
           id: abstract.id,
           name: 'Abstract',
@@ -85,20 +87,20 @@ export default class TOCProvider extends EventEmitter {
       }
     }
 
-    const contentNodes = doc.get(config.containerId).getChildren()
+    let body = doc.get('body')
+    const contentNodes = body.getContent()
     contentNodes.forEach(node => {
       if (node.type === 'heading') {
         entries.push({
           id: node.id,
           name: node.getText(),
-          level: parseInt(node.attr('level'), 10),
+          level: node.level,
           node: node
         })
       }
     })
 
-    const footnotes = doc.get('footnotes')
-    if (footnotes.getChildCount() > 0) {
+    if (article.footnotes.length > 0) {
       entries.push({
         id: 'footnotes',
         name: 'Footnotes',
@@ -106,8 +108,7 @@ export default class TOCProvider extends EventEmitter {
       })
     }
 
-    const references = doc.get('references')
-    if (references.getChildCount() > 0) {
+    if (article.references.length > 0) {
       entries.push({
         id: 'references',
         name: 'References',

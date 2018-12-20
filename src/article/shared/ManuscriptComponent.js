@@ -2,17 +2,17 @@ import { Component } from 'substance'
 
 export default class ManuscriptComponent extends Component {
   render ($$) {
+    const articleModel = this.props.model
+    const metadataModel = articleModel.getMetadata()
+    const bodyModel = articleModel.getBody()
+    const titleModel = articleModel.getTitle()
+    const authorsModel = metadataModel.getAuthors()
+    const abstractModel = articleModel.getAbstract()
+    const footnotesModel = articleModel.getFootnotes()
+    const referencesModel = articleModel.getReferences()
+
     const AuthorsListComponent = this.getComponent('authors-list')
     const SectionLabel = this.getComponent('section-label')
-    const model = this.props.model
-    const frontModel = model.getPropertyValue('front')
-    const bodyModel = model.getPropertyValue('body')
-    const backModel = model.getPropertyValue('back')
-    const titleModel = frontModel.getPropertyValue('title')
-    const authorsModel = frontModel.getPropertyValue('authors')
-    const abstractModel = frontModel.getPropertyValue('abstract')
-    const footnotesModel = backModel.getPropertyValue('footnotes')
-    const referencesModel = backModel.getPropertyValue('references')
     const TitleComponent = this._getPropertyComponent(titleModel)
     const AbstractComponent = this._getPropertyComponent(abstractModel)
     const BodyComponent = this._getPropertyComponent(bodyModel)

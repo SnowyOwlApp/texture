@@ -5,8 +5,9 @@ export default class XrefConverter {
 
   get tagName () { return 'xref' }
 
-  import () {
-    // nop
+  import (el, node) {
+    node.refType = el.attr('ref-type')
+    node.refTargets = (el.attr('rid') || '').split(/\s/)
   }
 
   export (node, el, exporter) {

@@ -109,7 +109,7 @@ function _populateOrganisations (doc, jats) {
 
 function _populateAuthors (doc, jats, importer) {
   let authorEls = jats.findAll(`contrib-group[content-type=author] > contrib`)
-  _populateContribs(doc, jats, importer, ['metadata', 'autors'], authorEls)
+  _populateContribs(doc, jats, importer, ['metadata', 'authors'], authorEls)
 }
 
 function _populateEditors (doc, jats, importer) {
@@ -122,7 +122,6 @@ function _populateContribs (doc, jats, importer, contribsPath, contribEls, group
     if (contribEl.attr('contrib-type') === 'group') {
       // ATTENTION: groups are defined 'inplace'
       // the members of the group are appended to the list of persons
-      let groups = doc.get('groups')
       let group = {
         id: contribEl.id,
         type: 'group',
@@ -133,7 +132,7 @@ function _populateContribs (doc, jats, importer, contribsPath, contribEls, group
         corresp: contribEl.getAttribute('corresp') === 'yes',
         awards: _getAwardIds(contribEl)
       }
-      groups.append(doc.create(group))
+      documentHelpers.append(doc, ['metadata', 'groups'], doc.create(group).id)
 
       let memberEls = contribEl.findAll('contrib')
       _populateContribs(doc, jats, importer, contribsPath, memberEls, group.id)
@@ -148,7 +147,7 @@ function _populateContribs (doc, jats, importer, contribsPath, contribEls, group
         suffix: getText(contribEl, 'suffix'),
         affiliations: _getAffiliationIds(contribEl),
         awards: _getAwardIds(contribEl),
-        bio: _getBio(contribEl, importer),
+        bio: _getBioContent(contribEl, importer),
         equalContrib: contribEl.getAttribute('equal-contrib') === 'yes',
         corresp: contribEl.getAttribute('corresp') === 'yes',
         deceased: contribEl.getAttribute('deceased') === 'yes',
@@ -159,7 +158,8 @@ function _populateContribs (doc, jats, importer, contribsPath, contribEls, group
   }
 }
 
-function _getBio (el, importer) {
+// ATTENTION: bio is not a specific node anymore, just a collection of paragraphs
+function _getBioContent (el, importer) {
   let $$ = el.createElement.bind(el.getOwnerDocument())
   let bioEl = findChild(el, 'bio')
 
@@ -168,7 +168,8 @@ function _getBio (el, importer) {
     bioEl = $$('bio')
   }
 
-  // drop everything than 'p' from bio
+  // TODO: this code looks similar to what we have in abstract or and caption
+  // drop everything other than 'p' from bio
   let bioContent = bioEl.children
   for (let idx = bioContent.length - 1; idx >= 0; idx--) {
     let child = bioContent[idx]
@@ -181,7 +182,7 @@ function _getBio (el, importer) {
     bioEl.append($$('p'))
   }
 
-  return importer.convertElement(bioEl).id
+  return bioEl.children.map(child => importer.convertElement(bioEl).id)
 }
 
 function _getAffiliationIds (el, isGroup) {
@@ -390,24 +391,22 @@ function _populateBody (doc, jats, jatsImporter) {
 function _populateFootnotes (doc, jats, jatsImporter) {
   let $$ = jats.createElement.bind(jats)
   let fnEls = jats.findAll('article > back > fn-group > fn')
-  let footnotes = doc.get('footnotes')
-  fnEls.forEach(fnEl => {
+  let article = doc.get('article')
+  article.footnotes = fnEls.map(fnEl => {
     // there must be at least one paragraph
     if (!fnEl.find('p')) {
       fnEl.append($$('p'))
     }
-    footnotes.append(jatsImporter.convertElement(fnEl))
+    return jatsImporter.convertElement(fnEl).id
   })
 }
 
 function _populateReferences (doc, jats, jatsImporter) {
-  let references = doc.get('references')
   // TODO: make sure that we only allow this place for references via restricting the TextureJATS schema
   let refListEl = jats.find('article > back > ref-list')
   if (refListEl) {
+    let article = doc.get('article')
     let refEls = refListEl.findAll('ref')
-    refEls.forEach(refEl => {
-      references.append(jatsImporter.convertElement(refEl))
-    })
+    article.references = refEls.map(refEl => jatsImporter.convertElement(refEl).id)
   }
 }

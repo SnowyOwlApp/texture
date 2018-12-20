@@ -19,12 +19,12 @@ export default class ListConverter {
       let { el, level } = item
       let li = doc.create({
         type: 'list-item',
-        id: el.id
+        id: el.id,
+        level: parseInt(level, 10)
       })
-      li.attr('level', level)
       let p = el.find('p')
       if (p) {
-        li.content = importer.annotatedText(p, li.getPath())
+        li.content = importer.annotatedText(p, [li.id, 'content'])
         return li.id
       }
       return false

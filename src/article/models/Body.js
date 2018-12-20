@@ -1,6 +1,10 @@
-import { DocumentNode } from 'substance'
+import { DocumentNode, documentHelpers } from 'substance'
 
-export default class Body extends DocumentNode {}
+export default class Body extends DocumentNode {
+  getContent () {
+    return documentHelpers.getNodes(this.getDocument(), this.content)
+  }
+}
 Body.schema = {
   type: 'body',
   content: {

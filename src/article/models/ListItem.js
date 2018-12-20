@@ -18,5 +18,5 @@ export default class ListItem extends DocumentNode {
 ListItem.schema = {
   type: 'list-item',
   content: TEXT(),
-  level: 'integer'
+  level: 'number'
 }
