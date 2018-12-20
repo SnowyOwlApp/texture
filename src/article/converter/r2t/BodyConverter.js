@@ -16,7 +16,7 @@ export default class BodyConverter {
         flattened.push(child)
       }
     }
-    node._childNodes = flattened.map(el => importer.convertElement(el).id)
+    node.content = flattened.map(el => importer.convertElement(el).id)
   }
 
   _flattenSec (sec, level) {

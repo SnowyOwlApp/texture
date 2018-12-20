@@ -1,48 +1,17 @@
 import { XMLDocumentImporter, last } from 'substance'
-import TextureArticleSchema from '../../TextureArticle'
+import TextureArticleSchema from '../../TextureArticleSchema'
 import InternalArticleSchema from '../../InternalArticleSchema'
-import { createXMLConverters } from '../../shared/xmlSchemaHelpers'
-// TODO: rename to XML helpers
-import BodyConverter from './BodyConverter'
-import DispFormulaConverter from './DispFormulaConverter'
-import DispQuoteConverter from './DispQuoteConverter'
-import FigureConverter from './FigureConverter'
-import FigurePanelConverter from './FigurePanelConverter'
-import FootnoteConverter from './FootnoteConverter'
-import ElementCitationConverter from './ElementCitationConverter'
-import TexMathConverter from './TexMathConverter'
-import ListConverter from './ListConverter'
-import PermissionsConverter from './PermissionsConverter'
-import PreformatConverter from './PreformatConverter'
-import TableConverter from './TableConverter'
-import TableFigureConverter from './TableFigureConverter'
-import UnsupportedNodeConverter from './UnsupportedNodeConverter'
 import UnsupportedInlineNodeConverter from './UnsupportedInlineNodeConverter'
+import UnsupportedNodeConverter from './UnsupportedNodeConverter'
+import _converters from './_converters'
 
 export default function createJatsImporter (doc) {
   // Note: we are applying a hybrid approach, i.e. we create XML importers for the JATS schema
   // but only for those elements which are supported by our internal article schema.
   let jatsSchema = TextureArticleSchema.xmlSchema
-  let tagNames = jatsSchema.getTagNames().filter(name => Boolean(InternalArticleSchema.getNodeClass(name)))
-  let jatsConverters = createXMLConverters(TextureArticleSchema.xmlSchema, tagNames)
-  let converters = [
-    new BodyConverter(),
-    // this is only used for import, because BodyConverter does an on-the-fly DOM transformation
-    // before calling element converters. Thus, in the export direction headings are already transformed into <sec> elements
-    HeadingImporter,
-    new DispFormulaConverter(),
-    new DispQuoteConverter(),
-    new FigureConverter(),
-    new FigurePanelConverter(),
-    new FootnoteConverter(),
-    new TexMathConverter(),
-    new ListConverter(),
-    new PermissionsConverter(),
-    new PreformatConverter(),
-    new TableFigureConverter(),
-    new TableConverter(),
-    new ElementCitationConverter()
-  ].concat(jatsConverters)
+  // HeadingImporter is only used for import, because BodyConverter does an on-the-fly DOM transformation
+  // before calling element converters. Thus, in the export direction headings are already transformed into <sec> elements
+  let converters = [HeadingImporter].concat(_converters)
   let jatsImporter = new _HybridJATSImporter({
     schema: InternalArticleSchema,
     xmlSchema: jatsSchema,

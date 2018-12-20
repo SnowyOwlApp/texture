@@ -2,7 +2,7 @@ import { without, documentHelpers } from 'substance'
 import {
   DynamicCollection,
   StringModel, TextModel, FlowContentModel,
-  EditorAPI, InternalEditingAPI
+  EditorAPI, InternalEditingAPI, ModelFactory
 } from '../kit'
 import renderEntity from './shared/renderEntity'
 import TranslateableModel from './models/TranslateableModel'
@@ -28,13 +28,12 @@ export default class ArticleAPI extends EditorAPI {
     this.article = articleSession.getDocument()
     this.archive = archive
     this._tableApi = new TableEditingAPI(articleSession)
-    this._modelCache = new Map()
-    // hook to invalidate cache
-    articleSession.on('change', this._invalidateDeletedModels, this)
+
+    this._modelFactory = new ModelFactory(articleSession.getDocument(), this)
   }
 
   dispose () {
-    this._modelCache.clear()
+    this._modelFactory.dispose()
   }
 
   /*
@@ -54,42 +53,7 @@ export default class ArticleAPI extends EditorAPI {
   }
 
   getModelById (id) {
-    let node = this.article.get(id)
-    if (node) {
-      let cachedModel = this._modelCache.get(node.id)
-      // ATTENTION: making sure that the node is
-      if (cachedModel) return cachedModel
-
-      // now check if there is a custom model for this type
-      let ModelClass = this.modelRegistry[node.type]
-      // TODO: we could go and check if there is a component
-      // registered for any of the parent types
-      if (!ModelClass) {
-        let superTypes = node.getSchema().getSuperTypes()
-        for (let superType of superTypes) {
-          ModelClass = this.modelRegistry[superType]
-          if (ModelClass) break
-        }
-      }
-      let model
-      if (ModelClass) {
-        model = new ModelClass(this, node)
-      } else {
-        model = this._getModelForNode(node)
-      }
-      if (model) {
-        this._modelCache.set(node.id, model)
-      }
-      return model
-    }
-  }
-
-  _invalidateDeletedModels (change) {
-    for (let op of change.ops) {
-      if (op.isDelete()) {
-        this._modelCache.delete(op.getValue().id)
-      }
-    }
+    return this._modelFactory.getModelById(id)
   }
 
   _getNode (nodeId) {

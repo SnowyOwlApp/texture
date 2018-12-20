@@ -1,3 +1,4 @@
+import { documentHelpers } from 'substance'
 import { findChild, findAllChildren } from '../util/domHelpers'
 
 /**
@@ -6,7 +7,7 @@ import { findChild, findAllChildren } from '../util/domHelpers'
  * the quote content by using a dedicated text property 'attrib'
  */
 export default class DispQuoteConverter {
-  get type () { return 'disp-quote' }
+  get type () { return 'block-quote' }
 
   get tagName () { return 'disp-quote' }
 
@@ -20,14 +21,14 @@ export default class DispQuoteConverter {
     if (attrib) {
       node.attrib = importer.annotatedText(attrib, [node.id, 'attrib'])
     }
-    node._childNodes = pEls.map(p => {
+    node.content = pEls.map(p => {
       return importer.convertElement(p).id
     })
   }
 
   export (node, el, exporter) {
     let $$ = exporter.$$
-    let children = node.getChildren()
+    let children = documentHelpers.getNodes(node.content)
     el.append(
       children.map(child => {
         return exporter.convertNode(child)

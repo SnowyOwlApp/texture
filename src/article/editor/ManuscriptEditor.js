@@ -1,7 +1,6 @@
 import { DefaultDOMElement } from 'substance'
 import { Managed } from '../../kit'
 import EditorPanel from '../shared/EditorPanel'
-import ManuscriptModel from '../models/ManuscriptModel'
 import TOCProvider from './TOCProvider'
 import TOC from './TOC'
 
@@ -15,7 +14,6 @@ export default class ManuscriptEditor extends EditorPanel {
   _initialize (props) {
     super._initialize(props)
 
-    this.model = new ManuscriptModel(this.api)
     this.tocProvider = this._getTOCProvider()
     this.context.tocProvider = this.tocProvider
   }
@@ -119,7 +117,7 @@ export default class ManuscriptEditor extends EditorPanel {
 
     contentPanel.append(
       $$(ManuscriptComponent, {
-        model: this.model,
+        model: this.api.getModelById('article'),
         disabled: this.props.disabled
       }).ref('article'),
       $$(Managed(Overlay), {

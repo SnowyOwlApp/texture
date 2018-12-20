@@ -75,40 +75,46 @@ export default class InternalArticleDocument extends Document {
 
   static createEmptyArticle (schema) {
     let doc = new InternalArticleDocument(schema)
-    const $$ = (type, id) => {
-      if (!id) id = type
-      return doc.create({type, id})
+    const $$ = (type, props = {}) => {
+      props.type = type
+      if (!props.id) props.id = type
+      return doc.create(props).id
     }
-
-    let articleRecord = doc.create({
-      type: 'article-record',
-      id: 'article-record',
-      permission: $$('permission', 'article-permission').id
+    $$('article', {
+      metadata: $$('metadata', {
+        permission: $$('permission')
+      }),
+      abstract: $$('abstract'),
+      body: $$('body')
     })
-
-    $$('article').append(
-      $$('metadata').append(
-        articleRecord,
-        $$('authors'),
-        $$('editors'),
-        $$('groups'),
-        $$('organisations'),
-        $$('awards'),
-        $$('keywords'),
-        $$('subjects')
-      ),
-      $$('content').append(
-        $$('front').append(
-          $$('title'),
-          $$('abstract')
-        ),
-        $$('body'),
-        $$('back').append(
-          $$('references'),
-          $$('footnotes')
-        )
-      )
-    )
+    // let articleRecord = doc.create({
+    //   type: 'article-record',
+    //   id: 'article-record',
+    //   permission: $$('permission', 'article-permission').id
+    // })
+    // $$('article').append(
+    //   $$('metadata').append(
+    //     articleRecord,
+    //     $$('authors'),
+    //     $$('editors'),
+    //     $$('groups'),
+    //     $$('organisations'),
+    //     $$('awards'),
+    //     $$('keywords'),
+    //     $$('subjects')
+    //   ),
+    //   $$('content').append(
+    //     $$('front').append(
+    //       $$('title'),
+    //       $$('abstract')
+    //     ),
+    //     $$('body'),
+    //     $$('back').append(
+    //       $$('references'),
+    //       $$('footnotes')
+    //     )
+    //   )
+    // )
     return doc
   }
 }

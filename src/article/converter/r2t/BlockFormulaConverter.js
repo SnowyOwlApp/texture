@@ -3,7 +3,7 @@ import { findChild } from '../util/domHelpers'
 import { getLabel } from '../../shared/nodeHelpers'
 
 export default class DispFormulaConverter {
-  get type () { return 'disp-formula' }
+  get type () { return 'block-formula' }
 
   get tagName () { return 'disp-formula' }
 

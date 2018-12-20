@@ -42,18 +42,20 @@ export default class TableConverter {
         }
         // flag all spanned cells so that we can skip them
         _fillSpanned($$, newRows, i, k, rowspan, colspan)
-        let cell = $$('table-cell', { id: c.id })
-        cell.attr(attributes)
-        // ATTENTION: do not use 'cell.content = ...' here
-        // because this does not trigger an operation
-        // when this converter is used inside a transaction, the assigment does not have an effect
-        // TODO: In importers we should never assign directly but use a node.set('name', value)
-        cell.setText(importer.annotatedText(c, cell.getPath()))
+        let cell = $$('table-cell', {
+          id: c.id,
+          rowspan: attributes['rowspan'],
+          colspan: attributes['colspan'],
+          content: importer.annotatedText(c, [c.id, 'content'])
+        })
         newRows[i].children[k] = cell
       }
     }
-    node._childNodes = newRows.map(data => {
-      let row = $$('table-row', { id: data.id }).append(data.children)
+    node.rows = newRows.map(data => {
+      let row = $$('table-row', {
+        id: data.id,
+        cells: data.children.map(cell => cell.id)
+      })
       return row.id
     })
   }

@@ -1,5 +1,4 @@
 import { Component } from 'substance'
-import { NodeModelFactory } from '../../kit'
 
 export default class ReferenceListComponent extends Component {
   didMount () {
@@ -33,7 +32,7 @@ export default class ReferenceListComponent extends Component {
 
     // ATTENTION: bibliography still works with document nodes
     bibliography.forEach(refNode => {
-      let model = NodeModelFactory.create(this.context.api, refNode)
+      let model = this.context.api.getModelById(refNode.id)
       el.append(
         $$(ReferenceComponent, { model })
       )

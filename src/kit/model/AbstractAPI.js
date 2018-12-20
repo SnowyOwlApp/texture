@@ -1,14 +1,6 @@
 import { documentHelpers } from 'substance'
-import ModelFactory from './NodeModelFactory'
 
 export default class AbstractAPI {
-  getModelById (id) {
-    let node = this._getDocument().get(id)
-    if (node) {
-      return this._getModelForNode(node)
-    }
-  }
-
   _getDocument () {
     throw new Error('This method is abstract')
   }
@@ -19,10 +11,6 @@ export default class AbstractAPI {
 
   _getValue (path) {
     return this._getDocument().get(path)
-  }
-
-  _getModelForNode (node) {
-    return ModelFactory.create(this, node)
   }
 
   // TODO: rethink. this should come from some configuration

@@ -31,8 +31,8 @@ export default class ListConverter {
     }).filter(Boolean)
     // populate list
     node.id = el.id
-    node.attributes = { 'list-type': config.join(',') }
-    node._childNodes = itemIds
+    node.listType = config.join(',')
+    node.items = itemIds
   }
 
   _extractItems (el, config, items, level, visited) {

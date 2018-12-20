@@ -1,7 +1,6 @@
-import { XMLElementNode } from 'substance'
-import { CHILDREN } from '../kit'
+import { DocumentNode, CHILDREN, documentHelpers } from 'substance'
 
-export default class TableNode extends XMLElementNode {
+export default class Table extends DocumentNode {
   constructor (...args) {
     super(...args)
 
@@ -21,8 +20,9 @@ export default class TableNode extends XMLElementNode {
   getCellMatrix () {
     if (!this._matrix) {
       let spanningCells = []
-      let matrix = this.getChildren().map((row, rowIdx) => {
-        let cells = row.getChildren()
+      let rows = this.getRows()
+      let matrix = rows.map((row, rowIdx) => {
+        let cells = row.getCells()
         for (let colIdx = 0; colIdx < cells.length; colIdx++) {
           let c = cells[colIdx]
           c.rowIdx = rowIdx
@@ -43,13 +43,14 @@ export default class TableNode extends XMLElementNode {
   }
 
   getRowCount () {
-    return this.getChildCount()
+    return this.rows.length
   }
 
   getColumnCount () {
-    if (this._childNodes.length === 0) return 0
-    let firstRow = this.getChildAt(0)
-    return firstRow.getChildCount()
+    if (this.rows.length === 0) return 0
+    let doc = this.getDocument()
+    let firstRow = doc.get(this.rows[0])
+    return firstRow.cells.length
   }
 
   getDimensions () {
@@ -64,12 +65,16 @@ export default class TableNode extends XMLElementNode {
     }
   }
 
+  getRows () {
+    return documentHelpers.getNodes(this.getDocument(), this.rows)
+  }
+
   _enableCaching () {
     // this hook is used to invalidate cached positions
     if (this.document) {
-      this._rowIds = new Set(this._childNodes)
-      let cellIds = this.getChildren().reduce((arr, row) => {
-        return arr.concat(row._childNodes)
+      this._rowIds = new Set(this.rows)
+      let cellIds = this.getRows().reduce((arr, row) => {
+        return arr.concat(row.cells)
       }, [])
       this._cellIds = new Set(cellIds)
       this.document.data.on('operation:applied', this._onOperationApplied, this)
@@ -80,20 +85,22 @@ export default class TableNode extends XMLElementNode {
     if (!op.path) return
     let nodeId = op.path[0]
     let hasChanged = false
-    if (nodeId === this.id && op.path[1] === '_childNodes') {
+    // whenever a row is added or removed
+    if (nodeId === this.id && op.path[1] === 'rows') {
       let update = op.getValueOp()
       if (update.isDelete()) {
         this._rowIds.delete(update.getValue())
       } else if (update.isInsert()) {
         let rowId = update.getValue()
         let row = this.document.get(rowId)
-        row._childNodes.forEach(cellId => {
+        row.cells.forEach(cellId => {
           this._cellIds.add(cellId)
         })
         this._rowIds.add(rowId)
       }
       hasChanged = true
-    } else if (this._rowIds.has(nodeId) && op.path[1] === '_childNodes') {
+    // whenever a row is changed belonging to this table
+    } else if (this._rowIds.has(nodeId) && op.path[1] === 'cells') {
       let update = op.getValueOp()
       if (update.isDelete()) {
         this._cellIds.delete(update.getValue())
@@ -101,7 +108,8 @@ export default class TableNode extends XMLElementNode {
         this._cellIds.add(update.getValue())
       }
       hasChanged = true
-    } else if (this._cellIds.has(nodeId) && (op.path[2] === 'rowspan' || op.path[2] === 'colspan')) {
+    // whenever rowspan/colspan of cell is changed, that belongs to this table
+    } else if (this._cellIds.has(nodeId) && (op.path[1] === 'rowspan' || op.path[1] === 'colspan')) {
       hasChanged = true
     }
     if (hasChanged) {
@@ -121,9 +129,9 @@ export default class TableNode extends XMLElementNode {
   }
 }
 
-TableNode.schema = {
+Table.schema = {
   type: 'table',
-  _childNodes: CHILDREN('table-row')
+  rows: CHILDREN('table-row')
 }
 
 function _shadowSpanned (matrix, row, col, rowspan, colspan, masterCell) {

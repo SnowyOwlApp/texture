@@ -1,3 +1,4 @@
+import { documentHelpers } from 'substance'
 import { findChild, findAllChildren } from '../util/domHelpers'
 import { getLabel } from '../../shared/nodeHelpers'
 
@@ -14,7 +15,7 @@ export default class FootnoteConverter {
     if (labelEl) {
       node.label = labelEl.text()
     }
-    node._childNodes = pEls.map(el => importer.convertElement(el).id)
+    node.content = pEls.map(el => importer.convertElement(el).id)
   }
 
   export (node, el, exporter) {
@@ -28,6 +29,6 @@ export default class FootnoteConverter {
     if (label) {
       el.append($$('label').text(label))
     }
-    el.append(node.getChildren().map(p => exporter.convertNode(p)))
+    el.append(documentHelpers.getNodes(node.content).map(p => exporter.convertNode(p)))
   }
 }
