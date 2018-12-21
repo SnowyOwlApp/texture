@@ -4,14 +4,17 @@ import { NodeComponent } from '../../kit'
 export default class ListComponent extends NodeComponent {
   render ($$) {
     const ListItemComponent = this.getComponent('list-item')
-    let node = this.props.node
-    let el = renderListNode(node, (item) => {
+    let model = this.props.model
+    let node = model.getNode()
+    // TODO: is it ok to rely on Node API here?
+    let el = renderListNode(node, item => {
       // item is either a list item node, or a tagName
       if (isString(item)) {
         return $$(item)
       } else if (item.type === 'list-item') {
+        let itemModel = model._api.getModelById(item.id)
         return $$(ListItemComponent, {
-          node: item
+          model: itemModel
         }).ref(item.id)
       }
     })

@@ -109,7 +109,7 @@ test('Figure: remove a figure with multiple panels', t => {
     type: 'node',
     nodeId: 'fig1',
     surfaceId: 'body',
-    containerId: 'body'
+    containerPath: ['body', 'content']
   })
   editorSession.transaction((tx) => {
     tx.deleteSelection()

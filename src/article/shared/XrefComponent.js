@@ -1,11 +1,11 @@
-import { NodeComponent } from '../../kit'
+import { ModelComponent } from '../../kit'
 import { getXrefLabel } from './xrefHelpers'
 
-export default class XrefComponent extends NodeComponent {
+export default class XrefComponent extends ModelComponent {
   render ($$) {
-    let node = this.props.node
-    let refType = node.getAttribute('ref-type')
-    let label = getXrefLabel(node)
+    let model = this.props.model
+    let refType = model.refType
+    let label = getXrefLabel(model)
     return $$('span').addClass('sc-xref sm-' + refType).append(label)
   }
 }

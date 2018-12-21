@@ -210,6 +210,6 @@ export default class ManuscriptEditor extends EditorPanel {
   }
 
   _getTOCProvider () {
-    return new TOCProvider(this.editorSession, { containerId: 'body' })
+    return new TOCProvider(this.editorSession)
   }
 }

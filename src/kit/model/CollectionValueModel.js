@@ -8,6 +8,10 @@ import _ContainerModel from './_ContainerModel'
 // I'd prefer the latter, because it is more general. Then, instead of figure.addPanel()
 // one would need to use figure.getPanels().addItem()
 export default class CollectionValueModel extends _ContainerModel {
+  get type () {
+    return 'collection'
+  }
+
   getItems () {
     return this._getItems()
   }
@@ -18,5 +22,9 @@ export default class CollectionValueModel extends _ContainerModel {
     if (id) {
       return this._api.getModelById(id)
     }
+  }
+
+  getItemIds () {
+    return this.getValue()
   }
 }

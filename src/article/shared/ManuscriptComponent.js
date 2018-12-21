@@ -1,30 +1,30 @@
-import { Component } from 'substance'
+import { ModelComponent } from '../../kit'
 
-export default class ManuscriptComponent extends Component {
+export default class ManuscriptComponent extends ModelComponent {
   render ($$) {
     const articleModel = this.props.model
-    const metadataModel = articleModel.getMetadata()
-    const bodyModel = articleModel.getBody()
-    const titleModel = articleModel.getTitle()
-    const authorsModel = metadataModel.getAuthors()
-    const abstractModel = articleModel.getAbstract()
-    const footnotesModel = articleModel.getFootnotes()
-    const referencesModel = articleModel.getReferences()
+    const metadataModel = articleModel.getMetadataModel()
+    const bodyModel = articleModel.getBodyModel()
+    const titleModel = articleModel.getTitleModel()
+    const authorsModel = metadataModel.getAuthorsModel()
+    const abstractModel = articleModel.getAbstractModel()
+    const footnotesModel = articleModel.getFootnotesModel()
+    const referencesModel = articleModel.getReferencesModel()
 
-    const AuthorsListComponent = this.getComponent('authors-list')
     const SectionLabel = this.getComponent('section-label')
-    const TitleComponent = this._getPropertyComponent(titleModel)
-    const AbstractComponent = this._getPropertyComponent(abstractModel)
-    const BodyComponent = this._getPropertyComponent(bodyModel)
-    const FootnotesListComponent = this._getPropertyComponent(footnotesModel)
-    const ReferenceListComponent = this._getPropertyComponent(referencesModel)
+    const TitleComponent = this.getComponentForModel(titleModel)
+    const AuthorsListComponent = this.getComponent('authors-list')
+    const AbstractComponent = this.getComponentForModel(abstractModel)
+    const BodyComponent = this.getComponentForModel(bodyModel)
+    const FootnotesComponent = this.getComponentForModel(footnotesModel)
+    const ReferenceListComponent = this.getComponent('reference-list')
 
     let el = $$('div').addClass('sc-manuscript').append(
-      $$(SectionLabel, {label: 'title-label'}).addClass('sm-title'),
+      $$(SectionLabel, { label: 'title-label' }).addClass('sm-title'),
       $$(TitleComponent, {
         model: titleModel,
         placeholder: this.getLabel('title-placeholder')
-      }).addClass('sm-title')
+      }).addClass('sm-title').ref('title')
     )
 
     if (authorsModel.length > 0) {
@@ -33,7 +33,7 @@ export default class ManuscriptComponent extends Component {
         $$(AuthorsListComponent, {
           model: authorsModel,
           placeholder: this.getLabel('authors-placeholder')
-        })
+        }).ref('authors')
       )
     }
 
@@ -42,7 +42,7 @@ export default class ManuscriptComponent extends Component {
       $$(AbstractComponent, {
         model: abstractModel,
         placeholder: this.getLabel('abstract-placeholder')
-      }).addClass('sm-abstract')
+      }).addClass('sm-abstract').ref('abstract')
     )
 
     el.append(
@@ -56,7 +56,7 @@ export default class ManuscriptComponent extends Component {
     if (footnotesModel.length > 0) {
       el.append(
         $$(SectionLabel, {label: 'footnotes-label'}).addClass('sm-footnotes'),
-        $$(FootnotesListComponent, {
+        $$(FootnotesComponent, {
           model: footnotesModel
         })
       )

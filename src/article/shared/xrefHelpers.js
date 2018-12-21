@@ -1,5 +1,5 @@
 import { orderBy, includes, without } from 'substance'
-import { findParentByType } from './nodeHelpers'
+import { findParentByType, getLabel } from './nodeHelpers'
 
 // left side: node type
 // right side: ref-type
@@ -37,13 +37,7 @@ export function getXrefTargets (xref) {
 }
 
 export function getXrefLabel (xref) {
-  // Note: we will store the label in the node state
-  // when we generate it
-  if (xref.state && xref.state.label) {
-    return xref.state.label
-  }
-  // otherwise we take the text content or an empty string
-  return xref.textContent || ' '
+  return getLabel(xref)
 }
 
 function _getCitationManagerForXref (xref, context) {

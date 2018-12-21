@@ -99,7 +99,7 @@ function ClipboardTests (memory) {
     let { editorSession, clipboard, context } = _setup(t, simple)
     editorSession.setSelection({
       type: 'container',
-      containerId: 'body',
+      containerPath: ['body', 'content'],
       startPath: ['p1', 'content'],
       startOffset: 1,
       endPath: ['p3', 'content'],
@@ -137,7 +137,7 @@ function ClipboardTests (memory) {
       type: 'property',
       path: ['p1', 'content'],
       startOffset: 1,
-      containerId: 'body'
+      containerPath: ['body', 'content']
     })
     let clipboardData = _createClipboardData()
     clipboardData.setData('text/plain', 'XXX')
@@ -152,7 +152,7 @@ function ClipboardTests (memory) {
       type: 'property',
       path: ['p1', 'content'],
       startOffset: 1,
-      containerId: 'body'
+      containerPath: ['body', 'content']
     })
     let clipboardData = _createClipboardData()
     clipboard.paste(clipboardData, context)
@@ -166,7 +166,7 @@ function ClipboardTests (memory) {
       type: 'property',
       path: ['p1', 'content'],
       startOffset: 1,
-      containerId: 'body'
+      containerPath: ['body', 'content']
     })
     let TEXT = 'XXX'
     let clipboardData = _createClipboardData()
@@ -198,7 +198,7 @@ function ClipboardTests (memory) {
       startOffset: 1,
       endPath: ['p2', 'content'],
       endOffset: 1,
-      containerId: 'body'
+      containerPath: ['body', 'content']
     }))
     let clipboardData = _createClipboardData()
     clipboard.cut(clipboardData, context)
@@ -367,7 +367,7 @@ function _fixtureTest (t, html, impl, forceWindows) {
     type: 'property',
     path: ['p1', 'content'],
     startOffset: 1,
-    containerId: 'body'
+    containerPath: ['body', 'content']
   })
   impl(doc, clipboard, context)
   platform.isWindows = _isWindows
@@ -384,7 +384,7 @@ function _emptyFixtureTest (t, html, impl, forceWindows) {
     type: 'property',
     path: ['p1', 'content'],
     startOffset: 0,
-    containerId: 'body'
+    containerPath: ['body', 'content']
   })
   impl(doc, clipboard, context)
 }

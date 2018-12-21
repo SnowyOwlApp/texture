@@ -1,21 +1,32 @@
-import NodeModelProperty from './NodeModelProperty'
+import createValueModel from './createValueModel'
 import { isFlowContentEmpty } from './modelHelpers'
-// import ModelProperty from './ModelProperty'
 import AbstractModel from './AbstractModel'
+import CollectionValueModel from './CollectionValueModel'
 
 export default class NodeModel extends AbstractModel {
   constructor (api, node) {
     super(api)
     if (!node) throw new Error("'node' is required")
     this._node = node
-    this._properties = []
-    this._propertiesByName = new Map()
+    this._propertyModels = new Map()
     this._initialize()
   }
 
   get type () { return this._node.type }
 
   get id () { return this._node.id }
+
+  getState () {
+    return this._node.state
+  }
+
+  toJSON () {
+    return this._node.toJSON()
+  }
+
+  getNode () {
+    return this._node
+  }
 
   isEmpty () {
     const node = this._node
@@ -29,19 +40,44 @@ export default class NodeModel extends AbstractModel {
     return false
   }
 
+  [Symbol.iterator] () {
+    return this._propertyModels[Symbol.iterator]()
+  }
+
   _initialize () {
-    const api = this._api
     const node = this._node
     const nodeSchema = node.getSchema()
-    for (let nodeProperty of nodeSchema) {
-      if (nodeProperty.name === 'id') continue
-      let modelProperty = new NodeModelProperty(api, node, nodeProperty)
-      this._properties.push(modelProperty)
-      this._propertiesByName.set(modelProperty.name, modelProperty)
+    for (let prop of nodeSchema) {
+      if (prop.name === 'id') continue
+      let valueModel = this._createValueModel(prop)
+      this._propertyModels.set(prop.name, valueModel)
     }
   }
 
   _getPropertyModel (name) {
     return this._propertiesByName.get(name)
+  }
+
+  _createValueModel (property) {
+    const api = this._api
+    const node = this._node
+    let name = property.name
+    const path = [this._node.id, name]
+    if (property.isReference() && property.isOwned()) {
+      if (property.isArray()) {
+        return new CollectionValueModel(api, path, property.targetTypes)
+      } else {
+        return api.getModelById(node[name])
+      }
+    }
+    let type = property.type
+    if (property.isReference()) {
+      if (property.isArray()) {
+        type = 'many-relationship'
+      } else {
+        type = 'single-relationship'
+      }
+    }
+    return createValueModel(api, type, path, property.targetTypes)
   }
 }

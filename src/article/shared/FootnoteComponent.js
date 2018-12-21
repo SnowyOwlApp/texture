@@ -1,28 +1,28 @@
-import { Component } from 'substance'
+import { ModelComponent } from '../../kit'
 import { getLabel } from './nodeHelpers'
 import { PREVIEW_MODE } from '../ArticleConstants'
 import PreviewComponent from './PreviewComponent'
 
-export default class FootnoteComponent extends Component {
+export default class FootnoteComponent extends ModelComponent {
   render ($$) {
-    const node = this.props.node
     const mode = this.props.mode
-    const model = this.props.model
-    const Container = this.getComponent('container')
+    const footnote = this.props.model
+    const contentModel = footnote.getContentModel()
+    const ContentComponent = this.getComponentForModel(contentModel)
 
     let el = $$('div')
       .addClass('sc-footnote')
-      .attr('data-id', node.id)
+      .attr('data-id', footnote.id)
 
-    let label = getLabel(node) || '?'
+    let label = getLabel(footnote) || '?'
 
     if (mode === PREVIEW_MODE) {
       el.append(
         $$(PreviewComponent, {
-          id: model.id,
+          id: footnote.id,
           label: label,
-          description: $$(Container, {
-            node: node,
+          description: $$(ContentComponent, {
+            model: contentModel,
             disabled: true,
             editable: false
           })
@@ -35,9 +35,9 @@ export default class FootnoteComponent extends Component {
           $$('div').addClass('se-label').append(
             label
           ),
-          $$(Container, {
+          $$(ContentComponent, {
             placeholder: 'Enter Footnote',
-            node: node,
+            model: contentModel,
             disabled: this.props.disabled
           }).ref('editor')
         )

@@ -69,7 +69,7 @@ export function importFigurePanel (tx, file, path) {
 
 export function importFigures (tx, sel, files, paths) {
   const LAST = files.length - 1
-  let containerId = sel.containerId
+  let containerPath = sel.containerPath
   files.map((file, idx) => {
     let path = paths[idx]
     let mimeData = file.type.split('/')
@@ -88,7 +88,7 @@ export function importFigures (tx, sel, files, paths) {
     tx.insertBlockNode(figure)
 
     if (idx === LAST) {
-      selectionHelpers.selectNode(tx, figure.id, containerId)
+      selectionHelpers.selectNode(tx, figure.id, containerPath)
     }
   })
 }

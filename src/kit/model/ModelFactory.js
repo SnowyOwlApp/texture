@@ -44,8 +44,15 @@ export default class ModelFactory {
       for (let prop of nodeSchema) {
         // skip id and type
         if (prop.name === 'id') continue
-        Model.prototype[_getter(prop.name)] = function () {
-          return this._getPropertyModel(prop.name)
+        Model.prototype[_modelGetter(prop.name)] = function () {
+          return this._propertyModels.get(prop.name)
+        }
+        if (!prop.isReference()) {
+          Object.defineProperty(Model.prototype, prop.name, {
+            get () { return this._node[prop.name] }
+          })
+        } else {
+
         }
       }
       ModelClass = Model
@@ -55,6 +62,10 @@ export default class ModelFactory {
   }
 }
 
-function _getter (name) {
+function _propGetter (name) {
   return ['get', name[0].toUpperCase(), name.slice(1)].join('')
+}
+
+function _modelGetter (name) {
+  return _propGetter(name) + 'Model'
 }

@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-import NodeModelComponent from '../shared/NodeModelComponent'
+import DefaultModelComponent from '../shared/DefaultModelComponent'
 import CardComponent from '../shared/CardComponent'
 
 export default class EditReferenceWorkflow extends Component {
@@ -12,19 +12,18 @@ export default class EditReferenceWorkflow extends Component {
 
   render ($$) {
     const model = this.props.model
-    const ItemEditor = this.getComponent(model.type, true) || NodeModelComponent
+    const ItemEditor = this.getComponent(model.type, true) || DefaultModelComponent
 
     let el = $$('div').addClass('se-edit-reference').append(
       $$(CardComponent, { model }).append(
-        $$(ItemEditor, {
-          model: model
-        })
+        $$(ItemEditor, { model })
       )
     )
 
     return el
   }
 
+  // TODO: do the action inside the API
   _removeReference (model) {
     const api = this.context.api
     const references = api.getModelById('references')

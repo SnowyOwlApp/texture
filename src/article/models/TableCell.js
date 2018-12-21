@@ -1,6 +1,6 @@
-import { DocumentNode, TEXT } from 'substance'
+import { TextNode, TEXT } from 'substance'
 
-export default class TableCell extends DocumentNode {
+export default class TableCell extends TextNode {
   constructor (...args) {
     super(...args)
 

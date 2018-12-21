@@ -22,8 +22,8 @@ export default class TableFigureComponent extends FigurePanelComponent {
     el.addClass(`sm-${mode}`)
 
     // TODO: this component should listen to label updates
-    let label = model.getLabel()
-    let contentModel = model.getContent()
+    let label = model.label
+    let contentModel = model.getContentModel()
     let figureContent = renderModelComponent(this.context, $$, {
       model: contentModel
     }).ref('content').addClass('se-content')
@@ -51,12 +51,12 @@ export default class TableFigureComponent extends FigurePanelComponent {
         figureContent,
         $$(SectionLabel, {label: 'title-label'}),
         renderModelComponent(this.context, $$, {
-          model: model.getTitle(),
+          model: model.getTitleModel(),
           label: this.getLabel('title')
         }).ref('title').addClass('se-title'),
         $$(SectionLabel, {label: 'caption-label'}),
         renderModelComponent(this.context, $$, {
-          model: model.getCaption(),
+          model: model.getCaptionModel(),
           label: this.getLabel('caption')
         }).ref('caption').addClass('se-caption')
       )
@@ -81,7 +81,7 @@ export default class TableFigureComponent extends FigurePanelComponent {
 
   _getFootnotes () {
     let model = this.props.model
-    let footnotes = model.getFootnotes()
+    let footnotes = model.getFootnotesModel()
     return footnotes.getItems()
   }
 }

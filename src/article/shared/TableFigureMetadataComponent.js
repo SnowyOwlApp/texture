@@ -4,7 +4,7 @@ import LicenseEditor from './LicenseEditor'
 
 export default class TableFigureMetadataComponent extends FigureMetadataComponent {
   _getClassNames () {
-    return `sc-table-figure-metadata sc-node-model`
+    return `sc-table-figure-metadata`
   }
 
   _getPropertyEditorClass (property) {

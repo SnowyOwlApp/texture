@@ -239,10 +239,11 @@ test('Table: inserting and deleting a table into manuscript', t => {
   let t2ref = p2.find('xref')
   t.equal(t2ref.state.label, 'Table 2', 'citation of t2 should have correct label')
 
+  // TODO: use test helper
   api._setSelection({
     type: 'node',
     nodeId: 't1',
-    containerId: 'body'
+    containerPath: ['body', 'content']
   })
   api.deleteSelection()
 

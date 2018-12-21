@@ -33,7 +33,7 @@ test('Footnotes: add a footnote in the manuscript while selection is on isolated
     type: 'node',
     nodeId: 'table-1',
     surfaceId: 'body',
-    containerId: 'body'
+    containerPath: ['body', 'content']
   })
   _insertFootnoteIntoManuscript(editor)
   t.equal(editor.findAll(manuscriptFootnoteSelector).length, 1, 'there should be one manuscript footnote')

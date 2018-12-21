@@ -198,8 +198,7 @@ export default class ArticleReader extends Component {
   }
 
   _getTOCProvider () {
-    let containerId = this._getBodyContainerId()
-    return new TOCProvider(this.props.articleSession, { containerId: containerId })
+    return new TOCProvider(this.props.articleSession)
   }
 
   _getBodyContainerId () {

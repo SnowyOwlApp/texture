@@ -3,8 +3,7 @@ import NumberModel from './NumberModel'
 import StringModel from './StringModel'
 import TextModel from './TextModel'
 import ObjectModel from './ObjectModel'
-import ChildModel from './ChildModel'
-import ChildrenModel from './ChildrenModel'
+import CollectionValueModel from './CollectionValueModel'
 import SingleRelationshipModel from './SingleRelationshipModel'
 import ManyRelationshipModel from './ManyRelationshipModel'
 import AnyModel from './AnyModel'
@@ -33,11 +32,12 @@ export default function createValueModel (api, type, path, targetTypes) {
       break
     }
     case 'child': {
-      valueModel = new ChildModel(api, path, targetTypes)
+      let id = api._getValue(path)
+      valueModel = api.getModelById(id)
       break
     }
     case 'children': {
-      valueModel = new ChildrenModel(api, path, targetTypes)
+      valueModel = new CollectionValueModel(api, path, targetTypes)
       break
     }
     case 'many-relationship': {

@@ -465,7 +465,7 @@ export default class ArticleAPI extends EditorAPI {
       return this.archive.createFile(file)
     })
     let sel = articleSession.getSelection()
-    if (!sel || !sel.containerId) return
+    if (!sel || !sel.containerPath) return
     articleSession.transaction(tx => {
       importFigures(tx, sel, files, paths)
     })

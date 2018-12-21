@@ -15,7 +15,7 @@ export default class FlowContentComponent extends ContainerEditor {
       appState.addObserver(['document'], this._onContainerChanged, this, {
         stage: 'render',
         document: {
-          path: this.container.getContentPath()
+          path: this.containerPath
         }
       })
 
@@ -76,10 +76,11 @@ export default class FlowContentComponent extends ContainerEditor {
     }
   }
 
-  _getNodeProps (node) {
-    let props = super._getNodeProps(node)
-    let model = this.context.api.getModelById(node.id)
-    props.model = model
+  _getNodeProps (...args) {
+    let props = super._getNodeProps(...args)
+    if (!props.model._isModel) {
+      props.model = this.context.api.getModelById(props.model.id)
+    }
     props.placeholder = this.props.placeholder || this.getLabel(this.props.name + '-placeholder')
     return props
   }

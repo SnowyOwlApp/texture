@@ -26,7 +26,7 @@ export function setCursorIntoProperty (property, pos) {
     path,
     startOffset: pos,
     surfaceId: surface.id,
-    containerId: surface.containerId
+    containerPath: surface.getContainerPath()
   })
 }
 
@@ -46,7 +46,7 @@ export function setSelection (editor, path, from, to) {
     startOffset: from,
     endOffset: to,
     surfaceId: surface.id,
-    containerId: surface.containerId
+    containerPath: surface.getContainerPath()
   })
 }
 

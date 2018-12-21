@@ -1,45 +1,45 @@
 import { DefaultDOMElement } from 'substance'
-import { NodeComponent } from '../../kit'
-import renderModelComponent from './renderModelComponent'
+import { ModelComponent } from '../../kit'
 import { PREVIEW_MODE } from '../../article/ArticleConstants'
 
-export default class FigureComponent extends NodeComponent {
+export default class FigureComponent extends ModelComponent {
   /*
     Note: in the Manuscript View only one figure panel is shown at time.
   */
   render ($$) {
     let mode = this._getMode()
     let model = this.props.model
+    let panels = model.getPanelsModel()
 
     let el = $$('div').addClass('sc-figure').addClass(`sm-${mode}`).attr('data-id', model.id)
 
-    if (model.hasPanels()) {
-      let content = this._renderCarousel($$)
+    if (panels.length > 0) {
+      let content = this._renderCarousel($$, panels)
       el.append(content)
     }
 
     return el
   }
 
-  _renderCarousel ($$) {
-    let model = this.props.model
-    const panelsLength = model.getPanelsLength()
-    if (panelsLength === 1) {
+  _renderCarousel ($$, panels) {
+    if (panels.length === 1) {
       return this._renderCurrentPanel($$)
-    }
-    return $$('div').addClass('se-carousel').append(
-      $$('div').addClass('se-current-panel').append(
-        this._renderCurrentPanel($$)
-      ),
-      $$('div').addClass('se-thumbnails').append(
-        this._renderThumbnails($$)
+    } else {
+      return $$('div').addClass('se-carousel').append(
+        $$('div').addClass('se-current-panel').append(
+          this._renderCurrentPanel($$)
+        ),
+        $$('div').addClass('se-thumbnails').append(
+          this._renderThumbnails($$)
+        )
       )
-    )
+    }
   }
 
   _renderCurrentPanel ($$) {
     let panel = this._getCurrentPanel()
-    return renderModelComponent(this.context, $$, {
+    let PanelComponent = this.getComponentForModel(panel)
+    return $$(PanelComponent, {
       model: panel,
       mode: this.props.mode
     })
@@ -47,10 +47,11 @@ export default class FigureComponent extends NodeComponent {
 
   _renderThumbnails ($$) {
     const model = this.props.model
-    const panels = model.getPanels()
+    const panels = model.getPanelsModel()
     const currentIndex = this._getCurrentPanelIndex()
     return panels.getItems().map((panel, idx) => {
-      const thumbnail = renderModelComponent(this.context, $$, {
+      let PanelComponent = this.getComponentForModel(panel)
+      const thumbnail = $$(PanelComponent, {
         model: panel,
         mode: PREVIEW_MODE
       })
@@ -70,29 +71,29 @@ export default class FigureComponent extends NodeComponent {
   _getCurrentPanel () {
     let model = this.props.model
     let currentPanelIndex = this._getCurrentPanelIndex()
-    let panels = model.getPanels()
+    let panels = model.getPanelsModel()
     return panels.getItemAt(currentPanelIndex)
   }
 
   _getCurrentPanelIndex () {
     let model = this.props.model
-    let node = model._node
+    let state = model.getState()
+    let panels = model.getPanelsModel()
     let currentPanelIndex = 0
-    if (node.state) {
-      currentPanelIndex = node.state.currentPanelIndex
+    if (state) {
+      currentPanelIndex = state.currentPanelIndex
     }
-    // FIXME: node state is corrupt
-    if (!node.panels[currentPanelIndex]) {
+    // FIXME: state is corrupt
+    if (currentPanelIndex < 0 || currentPanelIndex >= panels.length) {
       console.error('figurePanel.state.currentPanelIndex is corrupt')
-      node.state.currentPanelIndex = currentPanelIndex = 0
+      state.currentPanelIndex = currentPanelIndex = 0
     }
     return currentPanelIndex
   }
 
   _handleThumbnailClick (e) {
     const model = this.props.model
-    const panels = model.getPanels()
-    const panelIds = panels.getValue()
+    const panelIds = model.getPanelsModel().getItemIds()
     // ATTENTION: wrap the native element here so that this works for testing too
     let target = DefaultDOMElement.wrap(e.currentTarget)
     const panelId = target.getAttribute('data-id')

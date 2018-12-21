@@ -1,9 +1,9 @@
-import NodeModelComponent from '../shared/NodeModelComponent'
+import DefaultModelComponent from '../shared/DefaultModelComponent'
 import LicenseEditor from '../shared/LicenseEditor'
 
-export default class ArticleRecordEditor extends NodeModelComponent {
+export default class ArticleRecordEditor extends DefaultModelComponent {
   _getClassNames () {
-    return `sc-article-record sc-node-model`
+    return `sc-article-record`
   }
 
   get isRemovable () {

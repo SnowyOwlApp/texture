@@ -1,5 +1,9 @@
-export default class AbstractModel {
+import Model from './Model'
+
+export default class AbstractModel extends Model {
   constructor (api) {
+    super()
+
     this._api = api
   }
 

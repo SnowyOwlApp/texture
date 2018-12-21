@@ -12,7 +12,7 @@ export default class ContainerNodeComponent extends Component {
     el.append($$(ContainerEditor, {
       placeholder: this.props.placeholder,
       name: this.props.name,
-      containerId: node.id,
+      containerPath: node.getContentPath(),
       disabled: this.props.disabled
     }).ref('container'))
     // TODO: ability to edit attributes

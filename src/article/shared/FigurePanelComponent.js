@@ -1,18 +1,83 @@
 import { Component } from 'substance'
+import { ModelComponent } from '../../kit'
 import { PREVIEW_MODE, METADATA_MODE } from '../ArticleConstants'
 import FigureMetadataComponent from './FigureMetadataComponent'
 import PreviewComponent from './PreviewComponent'
-import renderModelComponent from './renderModelComponent'
 
-export default class FigurePanelComponent extends Component {
-  didMount () {
-    // HACK: while this is an idiomatic approach to updating, I don't like it because we just need this to receive updates for labels
-    // which are propagated via node state
-    // TODO: instead we should use a Component for the label which is binding itself to the state update
-    let mode = this._getMode()
-    if (mode !== METADATA_MODE) {
-      this.context.appState.addObserver(['document'], this.rerender, this, { stage: 'render', document: { path: [this.props.model.id] } })
+export default class FigurePanelComponent extends ModelComponent {
+  render ($$) {
+    const mode = this._getMode()
+    // different rendering when rendered as preview or in metadata view
+    if (mode === PREVIEW_MODE) {
+      return this._renderPreviewVersion($$)
+    } else if (mode === METADATA_MODE) {
+      return this._renderMetadataVersion($$)
     }
+
+    const model = this.props.model
+    const titleModel = model.getTitleModel()
+    const contentModel = model.getContentModel()
+    const captionModel = model.getCaptionModel()
+    const TitleComponent = this.getComponentForModel(titleModel)
+    const ContentComponent = this.getComponentForModel(contentModel)
+    const CaptionComponent = this.getComponentForModel(captionModel)
+    const SectionLabel = this.getComponent('section-label')
+
+    let el = $$('div')
+      .addClass(this._getClassNames())
+      .attr('data-id', model.id)
+      .addClass(`sm-${mode}`)
+      .addClass()
+
+    el.append(
+      $$(SectionLabel, {label: 'label-label'}),
+      $$(FigurePanelLabelComponent, { model }).ref('label'),
+      $$(ContentComponent, { model: contentModel }).ref('content').addClass('se-content'),
+      $$(SectionLabel, {label: 'title-label'}),
+      $$(TitleComponent, { model: titleModel }).ref('title').addClass('se-title'),
+      $$(SectionLabel, {label: 'caption-label'}),
+      $$(CaptionComponent, { model: captionModel }).ref('caption').addClass('se-caption')
+    )
+
+    return el
+  }
+
+  _getClassNames () {
+    return `sc-figure-panel sm-${this.props.model.getContentModel().type}`
+  }
+
+  _renderPreviewVersion ($$) {
+    const model = this.props.model
+    const contentModel = this.props.model.getContentModel()
+    const ContentComponent = this.getComponentForModel(contentModel)
+    // TODO: We could return the PreviewComponent directly.
+    // However this yields an error we need to investigate.
+    let thumbnail
+    if (contentModel.type === 'graphic') {
+      thumbnail = $$(ContentComponent, {
+        model: contentModel
+      }).ref('content')
+    }
+    // TODO: PreviewComponent should work with a model
+    return $$(PreviewComponent, {
+      id: model.id,
+      thumbnail,
+      label: model.label
+    })
+  }
+
+  _renderMetadataVersion ($$) {
+    return $$(FigureMetadataComponent, { model: this.props.model }).ref('metadata')
+  }
+
+  _getMode () {
+    return this.props.mode || 'manuscript'
+  }
+}
+
+class FigurePanelLabelComponent extends Component {
+  didMount () {
+    this.context.appState.addObserver(['document'], this.rerender, this, { stage: 'render', document: { path: [this.props.model.id] } })
   }
 
   dispose () {
@@ -20,63 +85,7 @@ export default class FigurePanelComponent extends Component {
   }
 
   render ($$) {
-    const model = this.props.model
-    let mode = this._getMode()
-
-    // delegating to a implementation in case of 'metadata'
-    if (mode === METADATA_MODE) {
-      return $$(FigureMetadataComponent, { model }).ref('metadata')
-    }
-
-    let el = $$('div')
-      // TODO: don't violate the 'sc-' contract
-      .addClass('sc-' + model.type)
-      .attr('data-id', model.id)
-    el.addClass(`sm-${mode}`)
-
-    // TODO: this component should listen to label updates
-    let label = model.getLabel()
-    let contentModel = model.getContent()
-    let figureContent = renderModelComponent(this.context, $$, {
-      model: contentModel
-    }).ref('content').addClass('se-content')
-    el.addClass(`sm-${contentModel.type}`)
-
-    if (mode === PREVIEW_MODE) {
-      // TODO: We could return the PreviewComponent directly.
-      // However this yields an error we need to investigate.
-      el.append(
-        $$(PreviewComponent, {
-          id: this.props.model.id,
-          thumbnail: contentModel.type === 'graphic' ? figureContent : undefined,
-          label
-        })
-      )
-    } else {
-      const SectionLabel = this.getComponent('section-label')
-
-      let labelEl = $$('div').addClass('se-label').text(label)
-      el.append(
-        $$(SectionLabel, {label: 'label-label'}),
-        labelEl,
-        figureContent,
-        $$(SectionLabel, {label: 'title-label'}),
-        renderModelComponent(this.context, $$, {
-          model: model.getTitle(),
-          label: this.getLabel('title')
-        }).ref('title').addClass('se-title'),
-        $$(SectionLabel, {label: 'caption-label'}),
-        renderModelComponent(this.context, $$, {
-          model: model.getCaption(),
-          label: this.getLabel('caption')
-        }).ref('caption').addClass('se-caption')
-      )
-    }
-
-    return el
-  }
-
-  _getMode () {
-    return this.props.mode || 'manuscript'
+    const label = this.props.model.label
+    return $$('div').addClass('se-label').text(label)
   }
 }

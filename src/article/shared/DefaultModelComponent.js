@@ -2,7 +2,10 @@ import { FontAwesomeIcon, Component } from 'substance'
 import { FormRowComponent } from '../../kit'
 import { CARD_MINIMUM_FIELDS } from '../ArticleConstants'
 
-export default class NodeModelComponent extends Component {
+/**
+ * A component that renders a model in a generic way iterating all properties.
+ */
+export default class DefaultModelComponent extends Component {
   didMount () {
     // EXPERIMENTAL: ExperimentalArticleValidator updates `node.id, @issues`
     const model = this.props.model
@@ -30,20 +33,20 @@ export default class NodeModelComponent extends Component {
     // TODO: issues should be accessed via model, not directly
     const nodeIssues = model._node['@issues']
     let hasIssues = (nodeIssues && nodeIssues.size > 0)
-
     const el = $$('div').addClass(this._getClassNames()).attr('data-id', model.id)
-
-    // EXPERIMENTAL: highlight editors for nodes with issues
+    // EXPERIMENTAL: highlighting fields with issues
     if (hasIssues) {
       el.addClass('sm-warning')
     }
-
     el.append(this._renderHeader($$))
 
+    // TODO: this needs to be redesigned:
+    // 1. it should be configurable which properties are optional
+    // 2. the determination of hidden vs shown props should be extracted into a helper method
     let hasHiddenProps = false
     const properties = this._getProperties()
-    const propsLength = Object.keys(properties).length
-    const hiddenPropsLength = Object.keys(properties).reduce((total, key) => {
+    const propsLength = properties.size
+    const hiddenPropsLength = properties.keys().reduce((total, key) => {
       if (!properties[key].isRequired() && properties[key].isEmpty()) {
         total++
       }
@@ -51,6 +54,7 @@ export default class NodeModelComponent extends Component {
     }, 0)
     const exposedPropsLength = propsLength - hiddenPropsLength
     let fieldsLeft = CARD_MINIMUM_FIELDS - exposedPropsLength
+
     for (let property of properties) {
       let hidden = !property.isRequired() && property.isEmpty()
       if (hidden && fieldsLeft > 0) {
@@ -81,7 +85,6 @@ export default class NodeModelComponent extends Component {
         )
       }
     }
-
     const controlEl = $$('div').addClass('se-control')
       .on('click', this._toggleMode)
 
@@ -113,7 +116,7 @@ export default class NodeModelComponent extends Component {
   }
 
   _getClassNames () {
-    return `sc-node-model sm-${this.props.model.type}`
+    return `sc-default-model sm-${this.props.model.type}`
   }
 
   _renderHeader ($$) {
@@ -137,6 +140,7 @@ export default class NodeModelComponent extends Component {
     return true
   }
 
+  // TODO: get rid of this
   get isRemovable () {
     return true
   }

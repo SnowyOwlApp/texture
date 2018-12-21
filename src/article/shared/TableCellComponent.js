@@ -4,7 +4,7 @@ import TableCellEditor from './TableCellEditor'
 export default class TableCellComponent extends NodeComponent {
   render ($$) {
     const cell = this.props.node
-    let el = $$(cell.attr('heading') ? 'th' : 'td')
+    let el = $$(cell.heading ? 'th' : 'td')
     el.addClass('sc-table-cell')
     let attributes = {
       id: cell.id,

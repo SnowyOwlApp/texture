@@ -2,7 +2,7 @@ import { DocumentNode, CHILDREN, documentHelpers } from 'substance'
 
 export default class TableRow extends DocumentNode {
   getCells () {
-    return documentHelpers.getNodes(this, this.cells)
+    return documentHelpers.getNodes(this.getDocument(), this.cells)
   }
 }
 TableRow.schema = {

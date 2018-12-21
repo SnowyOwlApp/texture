@@ -8,9 +8,6 @@ import { IsolatedNodeComponent as SubstanceIsolatedNodeComponent } from 'substan
 export default class IsolatedNodeComponentNew extends SubstanceIsolatedNodeComponent {
   constructor (parent, props, options) {
     super(parent, props, options)
-    if (!props.model) throw new Error("Property 'model' is required and must be a NodeModel")
-    if (!props.model._node) throw new Error('Provided model must container a DocumentNode')
-
     // HACK: overriding 'closed' IsolatedNodeComponents per se
     // TODO: on the long term we need to understand if it may be better to open
     // IsolatedNodes by default and only close them if needed.
@@ -21,7 +18,9 @@ export default class IsolatedNodeComponentNew extends SubstanceIsolatedNodeCompo
 
   _getContentProps () {
     let props = super._getContentProps()
-    props.model = this.props.model
+    if (!props.model._isModel) {
+      props.model = this.context.api.getModelById(props.model.id)
+    }
     return props
   }
 

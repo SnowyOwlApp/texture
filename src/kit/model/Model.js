@@ -8,4 +8,6 @@ export default class Model {
   get type () {
     throwMethodIsAbstract()
   }
+
+  get _isModel () { return true }
 }

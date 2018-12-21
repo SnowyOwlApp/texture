@@ -7,7 +7,7 @@ export default class List extends ListMixin(DocumentNode) {
   }
 
   getItems () {
-    return documentHelpers.getNodes(this, this.items)
+    return documentHelpers.getNodes(this.getDocument(), this.items)
   }
 
   getItemsPath () {

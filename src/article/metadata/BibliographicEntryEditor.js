@@ -1,7 +1,7 @@
-import NodeModelComponent from '../shared/NodeModelComponent'
+import DefaultModelComponent from '../shared/DefaultModelComponent'
 import InplaceRefContribEditor from './InplaceRefContribEditor'
 
-export default class BibliographicEntryEditor extends NodeModelComponent {
+export default class BibliographicEntryEditor extends DefaultModelComponent {
   // using a special inplace property editor for 'ref-contrib's
   _getPropertyEditorClass (property) {
     let targetTypes = property.targetTypes

@@ -18,7 +18,7 @@ export default class ContainerEditorNew extends ModifiedSurface(SubstanceContain
     appState.addObserver(['document'], this._onContainerChanged, this, {
       stage: 'render',
       document: {
-        path: this.container.getContentPath()
+        path: this.containerPath
       }
     })
   }
@@ -72,10 +72,11 @@ export default class ContainerEditorNew extends ModifiedSurface(SubstanceContain
     }
   }
 
-  _getNodeProps (node) {
-    let props = super._getNodeProps(node)
-    let model = this.context.api.getModelById(node.id)
-    props.model = model
+  _getNodeProps (model) {
+    let props = super._getNodeProps(model)
+    if (!props.model._isModel) {
+      props.model = this.context.api.getModelById(model.id)
+    }
     return props
   }
 

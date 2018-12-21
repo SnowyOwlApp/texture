@@ -1,9 +1,9 @@
-import NodeModelComponent from './NodeModelComponent'
+import DefaultModelComponent from './DefaultModelComponent'
 import LicenseEditor from './LicenseEditor'
 
-export default class FigureMetadataComponent extends NodeModelComponent {
+export default class FigureMetadataComponent extends DefaultModelComponent {
   _getClassNames () {
-    return `sc-figure-metadata sc-node-model`
+    return `sc-figure-metadata`
   }
 
   _renderHeader ($$) {

@@ -8,7 +8,7 @@ import {
 } from 'substance'
 
 import {
-  BasePackage, EditorBasePackage, ModelComponentPackage, FindAndReplacePackage
+  BasePackage, EditorBasePackage, ModelComponentPackage, FindAndReplacePackage, FlowContentComponent
 } from '../../kit'
 
 import EntityLabelsPackage from '../shared/EntityLabelsPackage'
@@ -63,8 +63,6 @@ import PersistencePackage from '../../PersistencePackage'
 import AddReferenceWorkflow from '../shared/AddReferenceWorkflow'
 import EditReferenceWorkflow from './EditReferenceWorkflow'
 
-import CollectionEditor from '../metadata/CollectionEditor'
-
 export default {
   name: 'ManscruptEditor',
   configure (config) {
@@ -83,19 +81,15 @@ export default {
     // which would generate disallowed content
     config.setCommandManagerClass(SchemaDrivenCommandManager)
 
-    config.addComponent('toc', TOC)
-    config.addComponent('references', ReferenceListComponent)
-    config.addComponent('footnotes', FootnoteGroupComponent)
-
-    // overriding the default components for preview
+    config.addComponent('collection', FlowContentComponent, true)
+    config.addComponent('footnotes', FootnoteGroupComponent, true)
     config.addComponent('figure', FigureComponent, true)
     config.addComponent('figure-panel', FigurePanelComponent, true)
     config.addComponent('table-figure', TableFigureComponent, true)
-    config.addComponent('fn', FootnoteComponent, true)
-    config.addComponent('bibr', ReferenceComponent, true)
-
-    // TODO: try to get rid of this one
-    config.addComponent('collection', CollectionEditor)
+    config.addComponent('footnote', FootnoteComponent, true)
+    config.addComponent('reference', ReferenceComponent, true)
+    config.addComponent('reference-list', ReferenceListComponent, true)
+    config.addComponent('toc', TOC, true)
 
     // Commands
     config.addCommand('edit-xref', EditInlineNodeCommand, {

@@ -1,11 +1,10 @@
-import { includes, EventEmitter, documentHelpers } from 'substance'
+import { includes, EventEmitter } from 'substance'
 
 export default class TOCProvider extends EventEmitter {
   constructor (articleSession, config) {
     super()
 
     this.articleSession = articleSession
-    this.config = config
 
     this.entries = this.computeEntries()
     if (this.entries.length > 0) {
