@@ -52,36 +52,12 @@ export default class TextureEditing extends Editing {
     return node
   }
 
-  createTextNode (tx, container, text) {
-    // FIXME: FIXME: bring back schema compliant tx.createTextNode()
-    // let parentType = container.type
-    // TODO: revisit on-the-fly schema check
-    // let schema = InternalArticleSchema.getElementSchema(parentType)
-    // if (schema.isAllowed('p')) {
-    //   return tx.create({ type: 'p', content: text })
-    // } else {
-    //   throw new Error(`FIXME: which default element should be used in <${parentType}>`)
-    // }
-    return tx.create({ type: 'p', content: text })
-  }
-
-  createListNode (tx, container, params) {
-    // FIXME: bring back schema compliant tx.createTextNode()
-    // let parentType = container.type
-    // let schema = InternalArticleSchema.getElementSchema(parentType)
-    // if (schema.isAllowed('list')) {
-    //   let el = tx.create({ type: 'list' })
-    //   if (params.listType) {
-    //     el.attr('list-type', params.listType)
-    //   }
-    //   return el
-    // } else {
-    //   throw new Error(`<list> is not allowed in <${parentType}>`)
-    // }
-    let el = tx.create({ type: 'list' })
-    if (params.listType) {
-      el.attr('list-type', params.listType)
+  createListNode (tx, containerPath, params) {
+    let prop = tx.getProperty(containerPath)
+    if (prop.targetTypes.indexOf('list') >= 0) {
+      return tx.create({ type: 'list', listType: params.listType })
+    } else {
+      throw new Error(`'list' is not a valid child node for ${containerPath}`)
     }
-    return el
   }
 }

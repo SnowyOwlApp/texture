@@ -1,6 +1,6 @@
-import { DocumentNode, TEXT } from 'substance'
+import { DocumentNode, TextNodeMixin, TEXT } from 'substance'
 
-export default class ListItem extends DocumentNode {
+export default class ListItem extends TextNodeMixin(DocumentNode) {
   getLevel () {
     return this.level
   }
@@ -10,6 +10,10 @@ export default class ListItem extends DocumentNode {
     doc.set([this.id, 'level'], newLevel)
   }
 
+  getPath () {
+    return [this.id, 'content']
+  }
+
   static isListItem () {
     return true
   }
@@ -17,6 +21,6 @@ export default class ListItem extends DocumentNode {
 
 ListItem.schema = {
   type: 'list-item',
-  content: TEXT(),
-  level: 'number'
+  level: 'number',
+  content: TEXT()
 }

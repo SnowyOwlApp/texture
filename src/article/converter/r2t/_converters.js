@@ -9,6 +9,7 @@ import ElementCitationConverter from './ElementCitationConverter'
 import ExternalLinkConverter from './ExternalLinkConverter'
 import GraphicConverter from './GraphicConverter'
 import InlineFormulaConverter from './InlineFormulaConverter'
+import InlineGraphicConverter from './InlineGraphicConverter'
 import ItalicConverter from './ItalicConverter'
 import MonospaceConverter from './MonospaceConverter'
 import ListConverter from './ListConverter'
@@ -35,6 +36,7 @@ export default [
   new GraphicConverter(),
   new ElementCitationConverter(),
   new InlineFormulaConverter(),
+  new InlineGraphicConverter(),
   new ItalicConverter(),
   new MonospaceConverter(),
   new ListConverter(),

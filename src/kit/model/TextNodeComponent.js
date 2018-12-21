@@ -12,7 +12,8 @@ import { Component } from 'substance'
 export default class TextNodeComponent extends Component {
   render ($$) {
     const TextPropertyComponent = this.getComponent('text-property')
-    const node = this.props.node
+    let model = this.props.model
+    const node = model.getNode()
     const tagName = this.getTagName()
     const path = node.getPath()
     let el = $$(tagName)
@@ -36,6 +37,6 @@ export default class TextNodeComponent extends Component {
 
   getClassNames () {
     // TODO: don't violate the 'sc-' contract
-    return 'sc-text-node sc-' + this.props.node.type
+    return 'sc-text-node sm-' + this.props.node.type
   }
 }

@@ -3,12 +3,18 @@ import { ModelComponent } from '../../kit'
 export default class ListItemComponent extends ModelComponent {
   render ($$) {
     const model = this.props.model
-    const contentModel = model.getContentModel()
-    const ContentComponent = this.getComponentForModel(contentModel)
+    // TODO: try not to use node entirely
+    const node = model.getNode()
+    const doc = node.getDocument()
+    const path = node.getPath()
+    const TextPropertyComponent = this.getComponent('text-property')
+
     let el = $$('li').addClass('sc-list-item')
     el.append(
-      $$(ContentComponent, {
-        model: contentModel
+      $$(TextPropertyComponent, {
+        doc,
+        name: path.join('.'),
+        path
       }).ref('text')
     )
     // for nested lists

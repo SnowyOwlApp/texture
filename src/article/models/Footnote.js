@@ -8,7 +8,7 @@ export default class Footnote extends DocumentNode {
   }
 }
 Footnote.schema = {
-  type: 'fn',
+  type: 'footnote',
   label: PLAIN_TEXT,
   content: CHILDREN('paragraph')
 }

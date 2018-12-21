@@ -12,6 +12,7 @@ import FigurePanelComponent from './FigurePanelComponent'
 import FootnoteComponent from './FootnoteComponent'
 import HeadingComponent from './HeadingComponent'
 import InlineFormulaComponent from './InlineFormulaComponent'
+import InlineGraphicComponent from './InlineGraphicComponent'
 import ListComponent from './ListComponent'
 import ListItemComponent from './ListItemComponent'
 import ManuscriptComponent from './ManuscriptComponent'
@@ -53,7 +54,7 @@ export default {
     config.addComponent('footnote', FootnoteComponent)
     config.addComponent('heading', HeadingComponent)
     config.addComponent('inline-formula', InlineFormulaComponent)
-    config.addComponent('inline-graphic', GraphicComponent)
+    config.addComponent('inline-graphic', InlineGraphicComponent)
     config.addComponent('italic', AnnotationComponent)
     config.addComponent('list', ListComponent)
     config.addComponent('list-item', ListItemComponent)

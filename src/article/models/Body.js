@@ -14,7 +14,7 @@ Body.schema = {
     type: ['array', 'id'],
     owned: true,
     default: [],
-    targetTypes: ['block-formula', 'block-quote', 'figure', 'heading', 'paragraph', 'table-figure'],
+    targetTypes: ['block-formula', 'block-quote', 'figure', 'heading', 'list', 'paragraph', 'table-figure'],
     defaultTextType: 'paragraph'
   }
 }

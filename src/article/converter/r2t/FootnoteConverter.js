@@ -5,7 +5,7 @@ import { getLabel } from '../../shared/nodeHelpers'
 // TODO: at some point we want to retain the label and determine if the label should be treated as custom
 // or be generated.
 export default class FootnoteConverter {
-  get type () { return 'fn' }
+  get type () { return 'footnote' }
 
   get tagName () { return 'fn' }
 
