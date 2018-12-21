@@ -67,7 +67,7 @@ export default class ContainerEditorNew extends ModifiedSurface(SubstanceContain
         return this.getComponent('text-node')
       // otherwise component for unsupported nodes
       } else {
-        return this.getComponent('unsupported')
+        return this.getComponent('unsupported-node')
       }
     }
   }

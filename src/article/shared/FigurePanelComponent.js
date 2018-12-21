@@ -59,11 +59,13 @@ export default class FigurePanelComponent extends ModelComponent {
       }).ref('content')
     }
     // TODO: PreviewComponent should work with a model
-    return $$(PreviewComponent, {
+    // FIXME: there is problem with redirected components
+    // and Component as props
+    return $$('div').append($$(PreviewComponent, {
       id: model.id,
       thumbnail,
       label: model.label
-    })
+    }))
   }
 
   _renderMetadataVersion ($$) {

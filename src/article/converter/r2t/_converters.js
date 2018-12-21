@@ -7,6 +7,8 @@ import FigurePanelConverter from './FigurePanelConverter'
 import FootnoteConverter from './FootnoteConverter'
 import ElementCitationConverter from './ElementCitationConverter'
 import ExternalLinkConverter from './ExternalLinkConverter'
+import GraphicConverter from './GraphicConverter'
+import InlineFormulaConverter from './InlineFormulaConverter'
 import ItalicConverter from './ItalicConverter'
 import MonospaceConverter from './MonospaceConverter'
 import ListConverter from './ListConverter'
@@ -30,7 +32,9 @@ export default [
   new FigureConverter(),
   new FigurePanelConverter(),
   new FootnoteConverter(),
+  new GraphicConverter(),
   new ElementCitationConverter(),
+  new InlineFormulaConverter(),
   new ItalicConverter(),
   new MonospaceConverter(),
   new ListConverter(),

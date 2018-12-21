@@ -41,7 +41,7 @@ export default class TableFigureComponent extends FigurePanelComponent {
       )
     } else {
       const SectionLabel = this.getComponent('section-label')
-      const FootnoteComponent = this.getComponent('fn')
+      const FootnoteComponent = this.getComponent('footnote')
       const footnotes = this._getFootnotes()
 
       let labelEl = $$('div').addClass('se-label').text(label)

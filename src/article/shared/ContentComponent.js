@@ -7,7 +7,7 @@ export default class ContentComponent extends ModelComponent {
     let ContentComponent = this.getComponentForModel(content)
     let el = $$('div').addClass(this._getClassNames())
     el.append(
-      $$(ContentComponent, { model: content }).ref('content')
+      $$(ContentComponent, { model: content, name: model.id }).ref('content')
     )
     return el
   }

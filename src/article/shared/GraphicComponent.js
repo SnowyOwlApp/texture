@@ -1,10 +1,10 @@
-import { NodeComponent } from '../../kit'
+import { ModelComponent } from '../../kit'
 
-export default class GraphicComponent extends NodeComponent {
+export default class GraphicComponent extends ModelComponent {
   render ($$) {
-    const node = this.props.node
-    const mode = node.type === 'inline-graphic' ? 'inline' : 'block'
-    let url = node.getAttribute('xlink:href')
+    const model = this.props.model
+    const mode = model.type === 'inline-graphic' ? 'inline' : 'block'
+    let url = model.href
     let urlResolver = this.context.urlResolver
     if (urlResolver) {
       url = urlResolver.resolveUrl(url)
@@ -13,7 +13,7 @@ export default class GraphicComponent extends NodeComponent {
     let tagName = mode === 'inline' ? 'span' : 'div'
 
     let el = $$(tagName).addClass(elClass)
-      .attr('data-id', node.id)
+      .attr('data-id', model.id)
 
     if (this.state.errored) {
       let errorEl = $$(tagName).addClass('se-error').append(

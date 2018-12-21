@@ -2,7 +2,7 @@ import { DefaultDOMElement } from 'substance'
 import { findChild } from '../util/domHelpers'
 import { getLabel } from '../../shared/nodeHelpers'
 
-export default class DispFormulaConverter {
+export default class BlockFormulaConverter {
   get type () { return 'block-formula' }
 
   get tagName () { return 'disp-formula' }

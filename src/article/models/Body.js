@@ -4,6 +4,9 @@ export default class Body extends DocumentNode {
   getContent () {
     return documentHelpers.getNodes(this.getDocument(), this.content)
   }
+  getContentPath () {
+    return [this.id, 'content']
+  }
 }
 Body.schema = {
   type: 'body',

@@ -6,6 +6,13 @@ export default class XrefComponent extends ModelComponent {
     let model = this.props.model
     let refType = model.refType
     let label = getXrefLabel(model)
-    return $$('span').addClass('sc-xref sm-' + refType).append(label)
+    let el = $$('span').addClass('sc-xref sm-' + refType)
+    if (!label) {
+      el.addClass('sm-no-label')
+      el.append('?')
+    } else {
+      el.append(label)
+    }
+    return el
   }
 }

@@ -2,6 +2,8 @@ import ContainerEditor from '../ui/_ContainerEditor'
 
 /*
   Customized ContainerEditor for FlowContentModels.
+
+  TODO: merge this with _ContainerEditor
 */
 export default class FlowContentComponent extends ContainerEditor {
   // overriding event registration
@@ -71,7 +73,7 @@ export default class FlowContentComponent extends ContainerEditor {
         return this.getComponent('text-node')
       // otherwise component for unsupported nodes
       } else {
-        return this.getComponent('unsupported')
+        return this.getComponent('unsupported-node')
       }
     }
   }
