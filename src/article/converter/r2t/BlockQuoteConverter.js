@@ -6,7 +6,7 @@ import { findChild, findAllChildren } from '../util/domHelpers'
  * Our internal model deviates from the original one in that the the attribution is separated from
  * the quote content by using a dedicated text property 'attrib'
  */
-export default class DispQuoteConverter {
+export default class BlockQuoteConverter {
   get type () { return 'block-quote' }
 
   get tagName () { return 'disp-quote' }

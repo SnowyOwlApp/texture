@@ -3,10 +3,13 @@ import { NodeComponentMixin } from '../../kit'
 
 export default class ExtLinkComponent extends NodeComponentMixin(AnnotationComponent) {
   render ($$) {
+    let model = this.props.model
     let el = super.render($$)
-    let node = this.props.node
-    el.tagName = 'a'
-    el.attr('href', node.attr('xlink:href'))
+    el.attr('href', model.href)
     return el
+  }
+
+  getTagName () {
+    return 'a'
   }
 }

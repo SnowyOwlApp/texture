@@ -1,6 +1,6 @@
-import ContentComponent from './ContentComponent'
+import { TextNodeComponent } from '../../kit'
 
-export default class ParagraphComponent extends ContentComponent {
+export default class ParagraphComponent extends TextNodeComponent {
   _getClassNames () {
     return 'sc-paragraph'
   }

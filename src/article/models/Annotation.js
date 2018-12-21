@@ -1,6 +1,6 @@
-import { AnnotationMixin, DocumentNode } from 'substance'
+import { PropertyAnnotation } from 'substance'
 
-export default class Annotation extends AnnotationMixin(DocumentNode) {}
+export default class Annotation extends PropertyAnnotation {}
 Annotation.schema = {
   type: 'annotation'
 }

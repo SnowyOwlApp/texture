@@ -6,7 +6,7 @@ import {
   Table, TableFigure, TableRow, TableCell, Reference, BookRef, ChapterRef, ConferencePaperRef, DataPublicationRef,
   JournalArticleRef, MagazineArticleRef, NewspaperArticleRef, ReportRef, PatentRef, Permission, SoftwareRef,
   ThesisRef, WebpageRef, RefContrib, UnsupportedNode, UnsupportedInlineNode, Graphic, InlineGraphic,
-  Bold, Italic, Subscript, Superscript, Monoscript, Overline, Underline, Smallcaps, StrikeThrough, Break,
+  Bold, Italic, Subscript, Superscript, Monospace, Overline, Underline, Smallcaps, StrikeThrough, Break,
   ExternalLink, InlineFormula, Xref
 } from './models'
 
@@ -47,7 +47,7 @@ export default new DocumentSchema({
     ListItem,
     MagazineArticleRef,
     Metadata,
-    Monoscript,
+    Monospace,
     NewspaperArticleRef,
     Organisation,
     Overline,
