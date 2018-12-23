@@ -138,30 +138,36 @@ export default class ArticleAPI extends EditorAPI {
     return this.getModel('authors')
   }
 
-  addReferences (items, collection) {
-    const refContribProps = ['authors', 'editors', 'inventors', 'sponsors', 'translators']
+  addReference (item) {
+    this.addReferences([item])
+  }
+
+  /**
+   * @param {object[]} items a list of reference data records as plain objects
+   * TODO: document how these records look like
+   */
+  addReferences (items) {
+    const REFERENCES_PATH = ['article', 'references']
+    const REF_CONTRIB_PROPS = ['authors', 'editors', 'inventors', 'sponsors', 'translators']
     const articleSession = this.articleSession
     articleSession.transaction(tx => {
-      let refs = tx.get(collection._node.id)
-      items.forEach((item, i) => {
-        refContribProps.forEach(propName => {
+      let refNodes = items.map(item => {
+        for (let propName of REF_CONTRIB_PROPS) {
           if (item[propName]) {
-            let refContribs = item[propName].map(contrib => {
+            item[propName] = item[propName].map(contrib => {
               contrib.type = 'ref-contrib'
-              const node = tx.create(contrib)
-              return node.id
+              return tx.create(contrib).id
             })
-            item[propName] = refContribs
           }
-        })
-
-        let node = tx.create(item)
-        refs.appendChild(tx.get(node.id))
-        if (i === 0) {
-          let newSelection = this._selectFirstRequiredPropertyOfMetadataCard(node)
-          tx.setSelection(newSelection)
         }
+        let refNode = tx.create(item)
+        documentHelpers.append(tx, REFERENCES_PATH, refNode.id)
+        return refNode
       })
+      if (refNodes.length > 0) {
+        let newSelection = this._selectFirstRequiredPropertyOfMetadataCard(refNodes[0])
+        tx.setSelection(newSelection)
+      }
     })
   }
 
