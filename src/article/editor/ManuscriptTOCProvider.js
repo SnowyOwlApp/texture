@@ -1,6 +1,6 @@
 import { includes, EventEmitter } from 'substance'
 
-export default class TOCProvider extends EventEmitter {
+export default class ManuscriptTOCProvider extends EventEmitter {
   constructor (articleSession, config) {
     super()
 
@@ -13,14 +13,14 @@ export default class TOCProvider extends EventEmitter {
       this.activeEntry = null
     }
 
-    this.articleSession.on('change', this.handleDocumentChange, this)
+    this.articleSession.on('change', this._onDocumentChange, this)
   }
 
   dispose () {
     this.articleSession.off(this)
   }
 
-  handleDocumentChange (change) {
+  _onDocumentChange (change) {
     let doc = this.getDocument()
     let needsUpdate = false
     let tocTypes = this.constructor.tocTypes
@@ -163,4 +163,5 @@ export default class TOCProvider extends EventEmitter {
   }
 }
 
-TOCProvider.tocTypes = ['heading', 'ref', 'fn', 'p']
+// TODO: document how this works
+ManuscriptTOCProvider.tocTypes = ['heading', 'reference', 'footnote', 'paragraph']

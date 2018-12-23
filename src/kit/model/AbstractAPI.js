@@ -104,7 +104,7 @@ export default class AbstractAPI {
       for (let idx = ids.length - 1; idx >= 0; idx--) {
         let id = ids[idx]
         tx.update(path, { type: 'delete', pos: idx, value: id })
-        documentHelpers.deleteNode(tx, tx.get(id))
+        documentHelpers.deepDeleteNode(tx, tx.get(id))
       }
     }
   }

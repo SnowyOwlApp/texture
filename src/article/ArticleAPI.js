@@ -56,6 +56,15 @@ export default class ArticleAPI extends EditorAPI {
     return this._modelFactory.getModelById(id)
   }
 
+  getModelByPath (path) {
+    // assuming that path has length 2
+    let [id, prop] = path
+    let model = this.getModelById(id)
+    // TODO provide a CamelCase helper
+    let propertyModel = model.getPropertyModel(prop)
+    return propertyModel
+  }
+
   _getNode (nodeId) {
     return this.article.get(nodeId)
   }
@@ -77,15 +86,18 @@ export default class ArticleAPI extends EditorAPI {
   }
 
   addItemToCollection (item, collection) {
+    console.assert(collection._isCollectionValueModel, 'collection should be a CollectionValueModel instance')
+    let collectionPath = collection.getPath()
     this.articleSession.transaction(tx => {
       let node = tx.create(item)
-      tx.get(collection._node.id).appendChild(node)
+      documentHelpers.append(tx, collectionPath, node.id)
       let newSelection = this._selectFirstRequiredPropertyOfMetadataCard(node)
       tx.setSelection(newSelection)
     })
   }
 
   addItemsToCollection (items, collection) {
+    console.assert(collection._isCollectionValueModel, 'collection should be a CollectionValueModel instance')
     if (items.length === 0) return
     this.articleSession.transaction(tx => {
       for (let i = 0; i < items.length; i++) {
@@ -103,11 +115,12 @@ export default class ArticleAPI extends EditorAPI {
   }
 
   removeItemFromCollection (item, collection) {
+    console.assert(collection._isCollectionValueModel, 'collection should be a CollectionValueModel instance')
+    let collectionPath = collection.getPath()
     this.articleSession.transaction(tx => {
-      let _item = tx.get(item.id)
-      _item.getParent().removeChild(_item)
-      // TODO: this is actually 'deepDeleteNode()' deleting owned children too
-      documentHelpers.deleteNode(tx, _item)
+      let itemNode = tx.get(item.id)
+      documentHelpers.remove(tx, collectionPath, item.id)
+      documentHelpers.deepDeleteNode(tx, itemNode)
       tx.selection = null
     })
   }
@@ -504,7 +517,7 @@ export default class ArticleAPI extends EditorAPI {
       if (pos !== -1) {
         tx.update(collection._path, { type: 'delete', pos: pos })
       }
-      documentHelpers.deleteNode(tx, tx.get(item.id))
+      documentHelpers.deepDeleteNode(tx, tx.get(item.id))
       tx.selection = null
     })
   }

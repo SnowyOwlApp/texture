@@ -300,7 +300,7 @@ export default class TableEditingAPI {
     for (let rowIdx = endRow; rowIdx >= startRow; rowIdx--) {
       let row = table.getChildAt(rowIdx)
       table.removeChild(row)
-      documentHelpers.deleteNode(table.getDocument(), row)
+      documentHelpers.deepDeleteNode(table.getDocument(), row)
     }
   }
 
@@ -311,7 +311,7 @@ export default class TableEditingAPI {
       for (let colIdx = endCol; colIdx >= startCol; colIdx--) {
         let cell = row.getChildAt(colIdx)
         row.removeAt(colIdx)
-        documentHelpers.deleteNode(table.getDocument(), cell)
+        documentHelpers.deepDeleteNode(table.getDocument(), cell)
       }
     }
   }

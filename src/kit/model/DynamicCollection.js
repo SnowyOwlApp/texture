@@ -20,7 +20,7 @@ export default class DynamicCollection {
     const index = doc.getIndex('type')
     const nodesById = index.get(this._type)
     const items = map(nodesById, node => {
-      return api._getModelForNode(node)
+      return api.getModelById(node.id)
     })
     return items
   }

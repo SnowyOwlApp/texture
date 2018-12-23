@@ -87,20 +87,18 @@ export default class MetadataEditor extends EditorPanel {
   }
 
   _renderTOCPane ($$) {
-    const model = this.model
-    const properties = model.getProperties()
+    const sections = this.model.getSections()
 
     let el = $$('div').addClass('se-toc-pane').ref('tocPane')
     let tocEl = $$('div').addClass('se-toc')
 
-    properties.forEach(property => {
-      let valueModel = property.valueModel
-      let id = valueModel.id || property.type
+    sections.forEach(({name, model}) => {
+      let id = model.id
       tocEl.append(
         $$(MetadataSectionTOCEntry, {
           id,
-          name: property.name,
-          model: valueModel
+          name,
+          model
         })
       )
     })
@@ -110,8 +108,7 @@ export default class MetadataEditor extends EditorPanel {
   }
 
   _renderContentPanel ($$) {
-    const model = this.model
-    const properties = model.getProperties()
+    const sections = this.model.getSections()
     const ScrollPane = this.getComponent('scroll-pane')
 
     let contentPanel = $$(ScrollPane, {
@@ -120,10 +117,8 @@ export default class MetadataEditor extends EditorPanel {
 
     let sectionsEl = $$('div').addClass('se-sections')
 
-    properties.forEach(property => {
-      let valueModel = property.valueModel
-      let id = valueModel.id || property.type
-      let content = $$(MetadataSection, { model: valueModel }).attr({id}).ref(property.name)
+    sections.forEach(({name, model}) => {
+      let content = $$(MetadataSection, { name, model }).ref(name)
       sectionsEl.append(content)
     })
 

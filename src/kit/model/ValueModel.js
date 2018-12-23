@@ -10,6 +10,10 @@ export default class ValueModel {
     return String(this._path)
   }
 
+  getPath () {
+    return this._path
+  }
+
   getValue () {
     return this._api._getValue(this._path)
   }

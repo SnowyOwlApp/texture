@@ -28,6 +28,21 @@ export default class NodeModel extends AbstractModel {
     return this._node
   }
 
+  getProperties () {
+    return this._propertyModels
+  }
+
+  getPropertyModel (name) {
+    return this._propertyModels.get(name)
+  }
+
+  getParent () {
+    let parentNode = this._node.getParent()
+    if (parentNode) {
+      return this.api.getModelById(parentNode.id)
+    }
+  }
+
   isEmpty () {
     const node = this._node
     // TODO: what does isEmpty() mean on a general node?

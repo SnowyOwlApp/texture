@@ -33,13 +33,7 @@ export default class SelectionStateReducer {
       let nodeId = sel.getNodeId()
       let node = doc.get(nodeId)
       if (node) {
-        let xpath = [node.type]
-        let parent = node.getParent()
-        while (parent) {
-          xpath.unshift(parent.type)
-          parent = parent.getParent()
-        }
-        state.xpath = xpath
+        state.xpath = node.getXpath().toArray()
       }
     }
   }

@@ -1,7 +1,7 @@
 import { DefaultDOMElement } from 'substance'
 import { Managed } from '../../kit'
 import EditorPanel from '../shared/EditorPanel'
-import TOCProvider from './TOCProvider'
+import ManuscriptTOCProvider from './ManuscriptTOCProvider'
 import TOC from './TOC'
 
 export default class ManuscriptEditor extends EditorPanel {
@@ -14,14 +14,13 @@ export default class ManuscriptEditor extends EditorPanel {
   _initialize (props) {
     super._initialize(props)
 
-    this.tocProvider = this._getTOCProvider()
-    this.context.tocProvider = this.tocProvider
+    this._tocProvider = new ManuscriptTOCProvider(this.editorSession)
   }
 
   didMount () {
     super.didMount()
 
-    this.tocProvider.on('toc:updated', this._showHideTOC, this)
+    this._tocProvider.on('toc:updated', this._showHideTOC, this)
     this._showHideTOC()
     this._restoreViewport()
 
@@ -38,7 +37,7 @@ export default class ManuscriptEditor extends EditorPanel {
   dispose () {
     super.dispose()
 
-    this.tocProvider.off(this)
+    this._tocProvider.off(this)
     DefaultDOMElement.getBrowserWindow().off(this)
   }
 
@@ -82,7 +81,7 @@ export default class ManuscriptEditor extends EditorPanel {
     let el = $$('div').addClass('se-toc-pane').ref('tocPane')
     el.append(
       $$('div').addClass('se-context-pane-content').append(
-        $$(TOC)
+        $$(TOC, { tocProvider: this._tocProvider })
       )
     )
     return el
@@ -109,7 +108,7 @@ export default class ManuscriptEditor extends EditorPanel {
     const Dropzones = this.getComponent('dropzones')
 
     let contentPanel = $$(ScrollPane, {
-      tocProvider: this.tocProvider,
+      tocProvider: this._tocProvider,
       // scrollbarType: 'substance',
       contextMenu: 'custom',
       scrollbarPosition: 'right'
@@ -205,11 +204,8 @@ export default class ManuscriptEditor extends EditorPanel {
   }
 
   _isTOCVisible () {
-    let entries = this.tocProvider.getEntries()
+    // TODO: add a method to ManuscriptTocProvider which is helping to do this check
+    let entries = this._tocProvider.getEntries()
     return entries.length >= 2
-  }
-
-  _getTOCProvider () {
-    return new TOCProvider(this.editorSession)
   }
 }

@@ -19,7 +19,7 @@ export default class AddEntityCommand extends Command {
 
   // Default implementation takes the collection via configuration.
   _getCollection (params, context) {
-    const collectionName = this.config.collection
-    return context.api.getModelById(collectionName)
+    const collectionPath = this.config.collection
+    return context.api.getModelByPath(collectionPath)
   }
 }

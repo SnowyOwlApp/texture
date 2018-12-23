@@ -32,7 +32,7 @@ test(`AddEntity: add subject`, t => {
 })
 
 test(`AddEntity: add footnote`, t => {
-  _testAddEntity(t, 'footnote', 'fn')
+  _testAddEntity(t, 'footnote', 'footnote')
 })
 
 // addding reference is done in a workflow, where the user can choose to import, or select a specific type
@@ -59,15 +59,11 @@ function _testAddEntity (t, toolName, entityType) {
     // in addition to the plain 'Add Entity' we also test 'Remove+Undo'
     let modelId = card.el.getAttribute('data-id')
     editor.api.selectModel(modelId)
-    t.doesNotThrow(() => {
-      // remove the entity via remove button
-      editor.find('.sc-toggle-tool.sm-remove-col-item > button').el.click()
-    }, 'using "Remove" should not throw')
+    // remove the entity via remove button
+    editor.find(`.sc-toggle-tool.sm-remove-${toolName} > button`).el.click()
     t.nil(editor.find(cardSelector), 'card should have been removed')
     // now undo this change and then the card should be there again
-    t.doesNotThrow(() => {
-      editor.find('.sc-toggle-tool.sm-undo > button').el.click()
-    }, 'using "Undo" should not throw')
+    editor.find('.sc-toggle-tool.sm-undo > button').el.click()
     t.notNil(editor.find(cardSelector), 'card should be back again')
   }
   t.end()

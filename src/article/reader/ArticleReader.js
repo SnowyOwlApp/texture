@@ -5,7 +5,7 @@ import { createEditorContext, Managed } from '../../kit'
 import ArticleAPI from '../ArticleAPI'
 import ArticleEditorSession from '../ArticleEditorSession'
 import ManuscriptModel from '../models/ManuscriptModel'
-import TOCProvider from '../editor/TOCProvider'
+import TOCProvider from '../editor/ManuscriptTOCProvider'
 import TOC from '../editor/TOC'
 
 export default class ArticleReader extends Component {

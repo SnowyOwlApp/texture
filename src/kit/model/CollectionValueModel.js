@@ -27,4 +27,20 @@ export default class CollectionValueModel extends _ContainerModel {
   getItemIds () {
     return this.getValue()
   }
+
+  addItem (data = {}) {
+    // FIXME: here we need to seed the data
+    if (!data.type) {
+      data.type = this._targetTypes[0]
+    }
+    return this._api.addItemToCollection(data, this)
+  }
+
+  removeItem (item) {
+    return this._api.removeItemFromCollection(item, this)
+  }
+
+  get _isCollectionValueModel () {
+    return true
+  }
 }

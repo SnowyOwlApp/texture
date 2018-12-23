@@ -46,8 +46,10 @@ export default class DefaultModelComponent extends Component {
     let hasHiddenProps = false
     const properties = this._getProperties()
     const propsLength = properties.size
-    const hiddenPropsLength = properties.keys().reduce((total, key) => {
-      if (!properties[key].isRequired() && properties[key].isEmpty()) {
+    const hiddenPropsLength = Array.from(properties.keys()).reduce((total, key) => {
+      let property = properties.get(key)
+      // FIXME: hide properties that are not required
+      if (property.isEmpty()) {
         total++
       }
       return total
@@ -55,32 +57,32 @@ export default class DefaultModelComponent extends Component {
     const exposedPropsLength = propsLength - hiddenPropsLength
     let fieldsLeft = CARD_MINIMUM_FIELDS - exposedPropsLength
 
-    for (let property of properties) {
-      let hidden = !property.isRequired() && property.isEmpty()
+    for (let [name, model] of properties) {
+      // FIXME: hide properties that are not required
+      let hidden = model.isEmpty()
       if (hidden && fieldsLeft > 0) {
         hidden = false
         fieldsLeft--
       }
       if (hidden) hasHiddenProps = true
       if (fullMode || !hidden) {
-        const PropertyEditor = this._getPropertyEditorClass(property)
+        const PropertyEditor = this._getPropertyEditorClass(model)
         // skip this property if the editor implementation produces nil
         if (!PropertyEditor) continue
         let label
-        if (this._showLabelForProperty(property.name)) {
-          label = this.getLabel(property.name)
+        if (this._showLabelForProperty(name)) {
+          label = this.getLabel(name)
         }
-        const model = property.model
-        const issues = nodeIssues ? nodeIssues.get(property.name) : []
+        const issues = nodeIssues ? nodeIssues.get(name) : []
         el.append(
           $$(FormRowComponent, {
             label,
             issues
-          }).addClass(`sm-${property.name}`).append(
+          }).addClass(`sm-${name}`).append(
             $$(PropertyEditor, {
               label,
               model
-            }).ref(property.name)
+            }).ref(name)
           )
         )
       }

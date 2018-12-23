@@ -1,28 +1,39 @@
-import { CompositeModel } from '../../kit'
-import TranslationCollectionModel from './TranslationCollectionModel'
-import FigureCollectionModel from './FigureCollectionModel'
-import TableCollectionModel from './TableCollectionModel'
+// import TranslationCollectionModel from './TranslationCollectionModel'
+// import FigureCollectionModel from './FigureCollectionModel'
+// import TableCollectionModel from './TableCollectionModel'
 
-export default class MetadataModel extends CompositeModel {
+/**
+ * This is an artificial Model used to control the content displayed in the Metadata view.
+ */
+export default class MetadataModel {
   constructor (api) {
-    super(api)
+    this._api = api
 
-    this.setProperties(
-      { name: 'authors', model: api.getModelById('authors') },
-      { name: 'editors', model: api.getModelById('editors') },
-      { name: 'groups', model: api.getModelById('groups') },
-      { name: 'organisations', model: api.getModelById('organisations') },
-      { name: 'awards', model: api.getModelById('awards') },
-      { name: 'references', model: api.getModelById('references') },
-      { name: 'keywords', model: api.getModelById('keywords') },
-      { name: 'subjects', model: api.getModelById('subjects') },
-      { name: 'translations', model: new TranslationCollectionModel(api) },
-      { name: 'article', model: api.getModelById('article-record') },
-      { name: 'figures', model: new FigureCollectionModel(api) },
-      { name: 'tables', model: new TableCollectionModel(api) },
-      { name: 'footnotes', model: api.getModelById('footnotes') }
-    )
+    let articleModel = api.getModelById('article')
+    let metadataModel = articleModel.getMetadataModel()
+
+    this._sections = [
+      { name: 'authors', model: metadataModel.getAuthorsModel() },
+      { name: 'editors', model: metadataModel.getEditorsModel() },
+      { name: 'groups', model: metadataModel.getGroupsModel() },
+      { name: 'organisations', model: metadataModel.getOrganisationsModel() },
+      { name: 'awards', model: metadataModel.getAwardsModel() },
+      { name: 'references', model: articleModel.getReferencesModel() },
+      { name: 'keywords', model: metadataModel.getKeywordsModel() },
+      { name: 'subjects', model: metadataModel.getSubjectsModel() },
+      // FIXME: bring back translations
+      // { name: 'translations', model: new TranslationCollectionModel(api) },
+      // FIXME: bring back 'article-record' section
+      // { name: 'article', model: api.getModelById('article-record') },
+      // FIXME: bring back figures section
+      // { name: 'figures', model: new FigureCollectionModel(api) },
+      // FIXME: bring back tables section
+      // { name: 'tables', model: new TableCollectionModel(api) },
+      { name: 'footnotes', model: articleModel.getFootnotesModel() }
+    ]
   }
 
-  get type () { return 'metadata-matter' }
+  getSections () {
+    return this._sections
+  }
 }
