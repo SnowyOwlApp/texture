@@ -1,8 +1,8 @@
-import { DocumentNode, documentHelpers } from 'substance'
+import { ContainerMixin, DocumentNode } from 'substance'
 
-export default class Body extends DocumentNode {
+export default class Body extends ContainerMixin(DocumentNode) {
   getContent () {
-    return documentHelpers.getNodes(this.getDocument(), this.content)
+    return this.content
   }
   getContentPath () {
     return [this.id, 'content']

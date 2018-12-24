@@ -15,7 +15,6 @@ import {
   ReplaceFigurePanelImageCommand, RemoveFigurePanelCommand
 } from '../shared/FigurePanelCommands'
 import UploadFigurePanelTool from '../shared/UploadFigurePanelTool'
-import CollectionEditor from './CollectionEditor'
 import ArticleRecordEditor from './ArticleRecordEditor'
 import BibliographicEntryEditor from './BibliographicEntryEditor'
 import TranslatableEntryEditor from './TranslatableEntryEditor'
@@ -37,7 +36,6 @@ export default {
     config.import(FindAndReplacePackage)
 
     // sections and editors
-    config.addComponent('collection', CollectionEditor)
     config.addComponent('article-record', ArticleRecordEditor)
     config.addComponent('bibr', BibliographicEntryEditor, true)
     config.addComponent('table-figure', TableFigureComponent, true)

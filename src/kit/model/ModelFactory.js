@@ -1,3 +1,4 @@
+import { documentHelpers } from 'substance'
 import NodeModel from './NodeModel'
 
 export default class ModelFactory {
@@ -47,12 +48,22 @@ export default class ModelFactory {
         Model.prototype[_modelGetter(prop.name)] = function () {
           return this._propertyModels.get(prop.name)
         }
+        // for primitive values add a simple getter to the node's property
         if (!prop.isReference()) {
           Object.defineProperty(Model.prototype, prop.name, {
             get () { return this._node[prop.name] }
           })
+        // for reference values resolve the underlying nodes
         } else {
-
+          if (prop.isArray()) {
+            Object.defineProperty(Model.prototype, prop.name, {
+              get () { return documentHelpers.getNodes(this._node.getDocument(), this._node[prop.name]) }
+            })
+          } else {
+            Object.defineProperty(Model.prototype, prop.name, {
+              get () { return this._node.getDocument().get(this._node[prop.name]) }
+            })
+          }
         }
       }
       ModelClass = Model

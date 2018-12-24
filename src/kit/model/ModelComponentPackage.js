@@ -1,5 +1,5 @@
 import BooleanComponent from './BooleanComponent'
-import FlowContentComponent from './FlowContentComponent'
+import CollectionComponent from './CollectionComponent'
 import StringModelComponent from './StringComponent'
 import TextModelComponent from './TextComponent'
 import ObjectComponent from './ObjectComponent'
@@ -17,7 +17,8 @@ export default {
     configurator.addComponent('boolean-model', BooleanComponent)
     configurator.addComponent('string-model', StringModelComponent)
     configurator.addComponent('text-model', TextModelComponent)
-    configurator.addComponent('flow-content-model', FlowContentComponent)
+    configurator.addComponent('flow-content-model', CollectionComponent)
+    configurator.addComponent('collection', CollectionComponent)
     configurator.addComponent('object-model', ObjectComponent)
     configurator.addComponent('single-relationship-model', SingleRelationshipComponent)
     configurator.addComponent('many-relationship-model', ManyRelationshipComponent)

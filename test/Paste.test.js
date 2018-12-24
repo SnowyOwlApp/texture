@@ -69,7 +69,7 @@ function _setup (t, snippetHtml, fixture) {
   els.forEach(el => {
     let node = importer.convertElement(el)
     if (node) {
-      container.show(node.id)
+      container.append(node.id)
     }
   })
   return { editor, snippet, api, doc }

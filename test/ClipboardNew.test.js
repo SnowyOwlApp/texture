@@ -1,6 +1,6 @@
 import { test as _test } from 'substance-test'
 import {
-  DefaultDOMElement, platform, find
+  DefaultDOMElement, platform, find, documentHelpers
 } from 'substance'
 import { Clipboard } from '../index'
 import setupTestArticleSession from './shared/setupTestArticleSession'
@@ -43,7 +43,7 @@ import MSW11OSXExtendedFixture from './clipboard/word-11-osx-extended'
 
 const PARAGRAPH_TYPE = 'p'
 const HEADING_TYPE = 'heading'
-const LINK_TYPE = 'ext-link'
+const LINK_TYPE = 'external-link'
 const EMPHASIS_TYPE = 'italic'
 const STRONG_TYPE = 'bold'
 const SUPERSCRIPT_TYPE = 'sup'
@@ -181,7 +181,6 @@ function ClipboardTests (memory) {
   // `"` and `'` characters which did not survive the way through HTML correctly
   test('Copy and Pasting source code.', t => {
     let { editorSession, clipboard, doc, context } = _setup(t, simple)
-    let body = doc.get('body')
     let cb = doc.create({
       type: CODEBLOCK_TYPE,
       id: 'cb1',
@@ -191,7 +190,7 @@ function ClipboardTests (memory) {
         '}'
       ].join('\n')
     })
-    body.showAt(body.getPosition('p1') + 1, cb)
+    documentHelpers.insertAt(doc, ['body', 'content'], doc.get('p1').getPosition() + 1, cb.id)
     editorSession.setSelection(doc.createSelection({
       type: 'container',
       startPath: ['p1', 'content'],
@@ -421,12 +420,9 @@ function _twoParagraphsTest (t, html, forceWindows) {
     clipboardData.setData('text/plain', '')
     clipboardData.setData('text/html', html)
     clipboard.paste(clipboardData, context)
-    let body = doc.get('body')
-    let p1 = body.getChildAt(0)
+    let [p1, p2, p3] = documentHelpers.getNodes(doc, ['body', 'content'])
     t.equal(p1.content, '0AAA', 'First paragraph should be truncated.')
-    let p2 = body.getChildAt(1)
     t.equal(p2.content, 'BBB', "Second paragraph should contain 'BBB'.")
-    let p3 = body.getChildAt(2)
     t.equal(p3.content, '123456789', 'Remainder of original p1 should go into forth paragraph.')
     t.end()
   }, forceWindows)
@@ -438,9 +434,8 @@ function _extendedTest (t, html, forceWindows) {
     clipboardData.setData('text/plain', '')
     clipboardData.setData('text/html', html)
     clipboard.paste(clipboardData, context)
-    let body = doc.get('body')
     // First node is a paragraph with strong, emphasis, superscript and subscript annos
-    let node1 = body.getChildAt(0)
+    let [node1, node2, node3] = documentHelpers.getNodes(doc, ['body', 'content'])
     t.equal(node1.type, PARAGRAPH_TYPE, 'First node should be a paragraph.')
     t.equal(node1.content.length, 121, 'First paragraph should contain 121 symbols.')
     let annotationsNode1 = doc.getIndex('annotations').get([node1.id, 'content']).sort((a, b) => {
@@ -465,7 +460,6 @@ function _extendedTest (t, html, forceWindows) {
     t.equal(annoFourthNode1.end.offset, 56, 'Subscript annotation should end at 57th symbol.')
 
     // Second node is a first level heading without annos
-    let node2 = body.getChildAt(1)
     t.equal(node2.type, HEADING_TYPE, 'Second node should be a heading.')
     t.equal(node2.level, 1, 'Second node should be a first level heading.')
     t.equal(node2.content.length, 12, 'Heading should contain 12 symbols.')
@@ -473,7 +467,6 @@ function _extendedTest (t, html, forceWindows) {
     t.equal(annotationsNode2.length, 0, 'There should be no annotations inside a heading.')
 
     // Third node is a paragraph with overlapping annos
-    let node3 = body.getChildAt(2)
     t.equal(node3.type, PARAGRAPH_TYPE, 'Third node should be a paragraph.')
     t.equal(node3.content.length, 178, 'Second paragraph should contain 178 symbols.')
     // let annotationsNode3 = doc.getIndex('annotations').get([node3.id, 'content']).sort((a, b) => {
@@ -543,11 +536,10 @@ function _setup (t, seed) {
 }
 
 function _emptyParagraphSeed (tx) {
-  let body = tx.get('body')
   tx.create({
     type: PARAGRAPH_TYPE,
     id: 'p1',
     content: ''
   })
-  body.show('p1')
+  documentHelpers.append(tx, ['body', 'content'], 'p1')
 }

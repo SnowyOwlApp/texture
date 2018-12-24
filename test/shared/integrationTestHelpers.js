@@ -161,9 +161,8 @@ export function loadBodyFixture (editor, xml) {
     let body = tx.get('body')
     api._clearFlowContent(tx, body.getContentPath())
     let importer = createJatsImporter(tx)
-    body.append(
-      els.map(el => importer.convertElement(el))
-    )
+    let contentIds = els.map(el => importer.convertElement(el).id)
+    tx.set(['body', 'content'], contentIds)
   })
 }
 

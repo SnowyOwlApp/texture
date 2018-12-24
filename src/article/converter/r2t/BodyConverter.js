@@ -65,12 +65,12 @@ export default class BodyConverter {
 
   export (node, el, exporter) {
     let $$ = el.createElement.bind(el)
-    const children = node.getChildren()
+    const children = node.getContent()
     let stack = [{ el }]
     for (let child of children) {
       if (child.type === 'heading') {
         let heading = child
-        let level = heading.getLevel()
+        let level = heading.level
         while (stack.length >= level + 1) {
           stack.pop()
         }

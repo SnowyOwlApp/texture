@@ -1,5 +1,5 @@
 export default {
-  type: 'ext-link',
+  type: 'external-link',
   tagName: 'a',
   import (el, node) {
     let href = el.getAttribute('href')

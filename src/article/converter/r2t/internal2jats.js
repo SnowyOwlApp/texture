@@ -619,8 +619,8 @@ function _exportAnnotatedText (jatsExporter, path, el) {
 }
 
 function _isContainerEmpty (container) {
-  if (container.getChildCount() === 0) return true
-  if (container.getChildCount() > 1) return false
-  let first = container.getChildAt(0)
+  if (container.getLength() === 0) return true
+  if (container.getLength() > 1) return false
+  let first = container.getNodeAt(0)
   return first && first.isText() && !first.getText()
 }

@@ -1,7 +1,6 @@
 import { without, documentHelpers } from 'substance'
 import {
-  DynamicCollection,
-  StringModel, TextModel, FlowContentModel,
+  StringModel, FlowContentModel,
   EditorAPI, InternalEditingAPI, ModelFactory
 } from '../kit'
 import renderEntity from './shared/renderEntity'
@@ -12,12 +11,6 @@ import {
   createEmptyElement, importFigurePanel, importFigures,
   insertTableFigure, setContainerSelection
 } from './articleHelpers'
-
-// TODO: this should come from configuration
-const COLLECTIONS = {
-  'author': 'authors',
-  'editor': 'editors'
-}
 
 export default class ArticleAPI extends EditorAPI {
   constructor (articleSession, config, archive) {
@@ -196,35 +189,8 @@ export default class ArticleAPI extends EditorAPI {
     return new StringModel(this, [article.id, 'attributes', 'xml:lang'])
   }
 
-  getCollectionForType (type) {
-    // TODO: need to rethink this.
-    // ATM we are registering special model classes for collections,
-    // which are named after the single entity they contain,
-    // e.g. 'authors' is a the collection of author nodes (which are person nodes essentially).
-    // This is currently pretty confusing. It would be better to have
-    // specific node in the model for that.
-    // Still, we would need a mechanism to specify which node is acting as the parent
-    // collection for which node.
-    let collectionType = COLLECTIONS[type]
-    // I don't like this implicit mapping.
-    if (!collectionType) {
-      collectionType = type + 's'
-    }
-    let model = this.getModel(collectionType)
-    if (!model) {
-      console.error(`No collection specified for type '${type}'. Using DynamicCollection. You should register a collection for this type explicitly.`)
-      model = new DynamicCollection(this, type)
-    }
-    return model
-  }
-
   getSchema (type) {
     return this.article.getSchema().getNodeSchema(type)
-  }
-
-  getArticleTitle () {
-    let titleNode = this.getArticle().get('title')
-    return new TextModel(this, titleNode.getPath())
   }
 
   getArticleAbstract () {

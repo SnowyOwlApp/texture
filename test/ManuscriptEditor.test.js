@@ -90,10 +90,11 @@ test('ManuscriptEditor: Switch paragraph to heading', t => {
   let editorSession = getEditorSession(editor)
   editorSession.transaction(tx => {
     let body = tx.get('body')
-    body.append(tx.create({
+    tx.create({
       type: 'p',
       id: 'p1'
-    }))
+    })
+    body.set('content', ['p1'])
   })
   setCursor(editor, 'p1.content', 0)
   // open the switch type dropdown
@@ -114,10 +115,11 @@ test('ManuscriptEditor: Switch paragraph to preformat', t => {
   let editorSession = getEditorSession(editor)
   editorSession.transaction(tx => {
     let body = tx.get('body')
-    body.append(tx.create({
+    tx.create({
       type: 'p',
       id: 'p1'
-    }))
+    })
+    body.set('content', ['p1'])
   })
   setCursor(editor, 'p1.content', 0)
   // open the switch type dropdown
@@ -150,10 +152,10 @@ test('ManuscriptEditor: toggling a list', t => {
 
   // click on list tool to turn "p1" into a list
   ulTool.find('button').el.click()
-  let listNode = doc.get('body').getChildAt(0)
+  let listNode = doc.get('body').getNodeAt(0)
   t.equal(listNode.type, 'list', 'first node should now be a list')
   t.equal(listNode.getChildCount(), 1, '.. with one item')
-  let listItem = listNode.getChildAt(0)
+  let listItem = listNode.getNodeAt(0)
   t.equal(listItem.getText(), p1Text, '.. with the text of the former paragraph')
 
   // now there should be contextual list tools be visible
@@ -162,7 +164,7 @@ test('ManuscriptEditor: toggling a list', t => {
 
   // click on list tool to turn it into a paragraph again
   editor.find('.sc-toggle-tool.sm-toggle-unordered-list > button').click()
-  let pNode = doc.get('body').getChildAt(0)
+  let pNode = doc.get('body').getNodeAt(0)
   t.equal(pNode.type, 'p', 'first node should now be a paragraph again')
 
   t.end()

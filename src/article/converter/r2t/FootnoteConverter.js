@@ -29,6 +29,6 @@ export default class FootnoteConverter {
     if (label) {
       el.append($$('label').text(label))
     }
-    el.append(documentHelpers.getNodes(node.content).map(p => exporter.convertNode(p)))
+    el.append(documentHelpers._getNodes(node.getDocument(), node.content).map(p => exporter.convertNode(p)))
   }
 }

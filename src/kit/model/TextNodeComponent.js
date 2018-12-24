@@ -2,7 +2,7 @@ import { Component } from 'substance'
 
 /*
   TODO: try to get rid of this by switching to a pure model based approach
-  ATM, we need this for legacy reasons: e.g. it is used by FlowContentComponent
+  ATM, we need this for legacy reasons: e.g. it is used by CollectionComponent
   for text nodes without a registered model.
 
   ATTENTION: There is another mechanism which leads to rerendering of TextPropertyComponents (-> MarkersManager)

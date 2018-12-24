@@ -5,7 +5,7 @@ import ContainerEditor from '../ui/_ContainerEditor'
 
   TODO: merge this with _ContainerEditor
 */
-export default class FlowContentComponent extends ContainerEditor {
+export default class CollectionComponent extends ContainerEditor {
   // overriding event registration
   didMount () {
     // ATTENTION: we are not calling super here, because we want to deviate from the default implementation
@@ -46,9 +46,8 @@ export default class FlowContentComponent extends ContainerEditor {
     }
   }
 
-  render ($$) {
-    let el = super.render($$).addClass('sc-flow-content')
-    return el
+  _getClassNames () {
+    return 'sc-collection sc-surface'
   }
 
   // overriding the default implementation, to control the behavior

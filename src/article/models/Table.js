@@ -57,6 +57,11 @@ export default class Table extends DocumentNode {
     return [this.getRowCount(), this.getColumnCount()]
   }
 
+  getRowAt (rowIdx) {
+    let doc = this.getDocument()
+    return doc.get(this.rows[rowIdx])
+  }
+
   getCell (rowIdx, colIdx) {
     const matrix = this.getCellMatrix()
     let row = matrix[rowIdx]

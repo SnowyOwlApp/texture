@@ -31,7 +31,7 @@ export default class FigureManager extends CitableContentManager {
       // ATTENTION: ATM we do not support any special label generation, such as Figure 1-figure supplement 2, which is controlled via attributes (@specific-use)
       // TODO: to support eLife's 'Figure Supplement' labeling scheme we would use a different counter and some type of encoding
       // e.g. [1, { pos: 1, type: 'supplement' }], we would then
-      let panels = figure.getPanels()
+      let panels = figure.panels
       let panelCounter = 1
       // processing sub-figures
       if (panels.length > 1) {

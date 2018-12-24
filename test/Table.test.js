@@ -273,7 +273,7 @@ test('Table: selecting a table', t => {
   editorSession.transaction(tx => {
     let body = tx.get('body')
     let table = tableHelpers.generateTable(tx, 10, 5, 'test-table')
-    body.append(table)
+    body.set('content', [table.id])
   })
   // a click (somewhere) on the isolated node should select the node
   let isolatedNode = editor.find('[data-id="test-table"]')

@@ -19,5 +19,5 @@ export default class TableCell extends TextNode {
 
 TableCell.schema = {
   type: 'table-cell',
-  content: TEXT('bold', 'italic', 'sup', 'sub', 'monospace', 'ext-link', 'xref', 'inline-formula', 'inline-graphic')
+  content: TEXT('bold', 'italic', 'superscript', 'subscript', 'monospace', 'external-link', 'xref', 'inline-formula', 'inline-graphic')
 }

@@ -8,7 +8,7 @@ import {
 } from 'substance'
 
 import {
-  BasePackage, EditorBasePackage, ModelComponentPackage, FindAndReplacePackage, FlowContentComponent
+  BasePackage, EditorBasePackage, ModelComponentPackage, FindAndReplacePackage, CollectionComponent
 } from '../../kit'
 
 import EntityLabelsPackage from '../shared/EntityLabelsPackage'
@@ -81,7 +81,7 @@ export default {
     // which would generate disallowed content
     config.setCommandManagerClass(SchemaDrivenCommandManager)
 
-    config.addComponent('collection', FlowContentComponent, true)
+    config.addComponent('collection', CollectionComponent, true)
     config.addComponent('footnotes', FootnoteGroupComponent, true)
     config.addComponent('figure', FigureComponent, true)
     config.addComponent('figure-panel', FigurePanelComponent, true)
@@ -324,8 +324,8 @@ export default {
     })
 
     config.addAnnotationTool({
-      name: 'ext-link',
-      nodeType: 'ext-link',
+      name: 'external-link',
+      nodeType: 'external-link',
       commandGroup: 'formatting',
       command: InsertExtLinkCommand,
       icon: 'fa-link',
@@ -334,16 +334,16 @@ export default {
     })
 
     config.addAnnotationTool({
-      name: 'sub',
-      nodeType: 'sub',
+      name: 'subscript',
+      nodeType: 'subscript',
       commandGroup: 'formatting',
       icon: 'fa-subscript',
       label: 'Subscript'
     })
 
     config.addAnnotationTool({
-      name: 'sup',
-      nodeType: 'sup',
+      name: 'superscript',
+      nodeType: 'superscript',
       commandGroup: 'formatting',
       icon: 'fa-superscript',
       label: 'Superscript'
@@ -415,13 +415,13 @@ export default {
       accelerator: 'CommandOrControl+E'
     })
 
-    config.addCommand('edit-ext-link', EditAnnotationCommand, {
-      nodeType: 'ext-link',
+    config.addCommand('edit-external-link', EditAnnotationCommand, {
+      nodeType: 'external-link',
       commandGroup: 'prompt'
     })
 
     // ExtLink
-    config.addTool('edit-ext-link', EditExtLinkTool)
+    config.addTool('edit-external-link', EditExtLinkTool)
     config.addIcon('open-link', { 'fontawesome': 'fa-external-link' })
     config.addLabel('open-link', 'Open Link')
 

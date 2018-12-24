@@ -1,15 +1,13 @@
 import { ModelComponent } from '../../kit'
-import CardComponent from '../shared/CardComponent'
+// import CardComponent from '../shared/CardComponent'
 import CollectionEditor from './CollectionEditor'
 
 export default class MetadataSection extends ModelComponent {
   render ($$) {
     const model = this.props.model
     const name = this.props.name
-    const label = this.getLabel(model.id)
-
-    let el = $$('div').addClass('sc-metadata-section')
-
+    // const label = this.getLabel(model.id)
+    let el = $$('div').addClass('sc-metadata-section').addClass(`sm-${name}`)
     if (model.type === 'collection') {
       el.append($$(CollectionEditor, { model }))
     } else {
@@ -40,4 +38,3 @@ export default class MetadataSection extends ModelComponent {
     return el
   }
 }
-

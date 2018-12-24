@@ -1,6 +1,12 @@
-import { DocumentNode, CHILDREN, PLAIN_TEXT } from 'substance'
+import { DocumentNode, ContainerMixin, CHILDREN, PLAIN_TEXT } from 'substance'
 
-export default class Footnote extends DocumentNode {
+export default class Footnote extends ContainerMixin(DocumentNode) {
+  getContent () {
+    return this.content
+  }
+  getContentPath () {
+    return [this.id, 'content']
+  }
   set label (val) {
     // TODO: at some point we have to distinguish generated from custom labels
     // for custom labels we need to track ops, for generated labels not.

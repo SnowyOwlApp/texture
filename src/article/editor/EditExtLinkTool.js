@@ -5,7 +5,7 @@ export default class EditExtLinkTool extends ToggleTool {
     let Input = this.getComponent('input')
     let Button = this.getComponent('button')
     let commandState = this.props.commandState
-    let el = $$('div').addClass('sc-edit-ext-link-tool')
+    let el = $$('div').addClass('sc-edit-external-link-tool')
 
     // GUARD: Return if tool is disabled
     if (commandState.disabled) {

@@ -4,6 +4,11 @@ export default class TableRow extends DocumentNode {
   getCells () {
     return documentHelpers.getNodes(this.getDocument(), this.cells)
   }
+
+  getCellAt (cellIdx) {
+    let doc = this.getDocument()
+    return doc.get(this.cells[cellIdx])
+  }
 }
 TableRow.schema = {
   type: 'table-row',

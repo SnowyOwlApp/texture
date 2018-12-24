@@ -28,7 +28,7 @@ export default class BlockQuoteConverter {
 
   export (node, el, exporter) {
     let $$ = exporter.$$
-    let children = documentHelpers.getNodes(node.content)
+    let children = documentHelpers._getNodes(node.getDocument(), node.content)
     el.append(
       children.map(child => {
         return exporter.convertNode(child)
