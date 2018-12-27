@@ -6,7 +6,7 @@ import {
 export default class InplaceRefContribEditor extends ValueComponent {
   render ($$) {
     let el = $$('div').addClass('sc-inplace-ref-contrib-editor')
-    el.append(this._renderChildren($$))
+    el.append(this._renderRefContribs($$))
     el.append(
       $$('button').addClass('se-add-value')
         // TODO: use icon provider
@@ -18,25 +18,23 @@ export default class InplaceRefContribEditor extends ValueComponent {
     return el
   }
 
-  _renderChildren ($$) {
+  _renderRefContribs ($$) {
     const model = this.props.model
-    let children = model.getChildren()
-    return children.map(child => this._renderChild($$, child))
+    let items = model.getItems()
+    return items.map(item => this._renderRefContrib($$, item))
   }
 
-  _renderChild ($$, refContrib) {
+  _renderRefContrib ($$, refContrib) {
     let id = refContrib.id
-    let givenNames = refContrib.getGivenNames()
-    let name = refContrib.getName()
     return $$(FormRowComponent).attr('data-id', id).addClass('sm-ref-contrib').append(
       // TODO: it would be good to have a default factory for property editors
       $$(StringComponent, {
-        label: this.getLabel(name.name),
-        model: name.model
+        label: this.getLabel('name'),
+        model: refContrib.getNameModel()
       }).addClass('sm-name'),
       $$(StringComponent, {
-        label: this.getLabel(givenNames.name),
-        model: givenNames.model
+        label: this.getLabel('given-names'),
+        model: refContrib.getGivenNamesModel()
       }).addClass('sm-given-names'),
       // TODO: use icon provider
       $$('button').addClass('se-remove-value')
@@ -47,11 +45,11 @@ export default class InplaceRefContribEditor extends ValueComponent {
 
   _addContrib () {
     const model = this.props.model
-    model.appendChild({type: 'ref-contrib'})
+    model.addItem({type: 'ref-contrib'})
   }
 
   _removeContrib (contrib) {
     const model = this.props.model
-    model.removeChild(contrib)
+    model.removeItem(contrib)
   }
 }

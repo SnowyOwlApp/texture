@@ -66,7 +66,7 @@ export default class DefaultModelComponent extends Component {
       }
       if (hidden) hasHiddenProps = true
       if (fullMode || !hidden) {
-        const PropertyEditor = this._getPropertyEditorClass(model)
+        const PropertyEditor = this._getPropertyEditorClass(model, name)
         // skip this property if the editor implementation produces nil
         if (!PropertyEditor) continue
         let label

@@ -453,7 +453,7 @@ export default class ArticleAPI extends EditorAPI {
     let targetIds = xrefModel._node.refTargets
     let index = targetIds.indexOf(targetId)
     let articleSession = this.getArticleSession()
-    if (index > 0) {
+    if (index >= 0) {
       articleSession.transaction(tx => {
         tx.update([xrefModel.id, 'refTargets'], { delete: { offset: index } })
       })

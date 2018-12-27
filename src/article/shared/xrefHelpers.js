@@ -3,11 +3,10 @@ import { getLabel } from './nodeHelpers'
 // left side: node type
 // right side: ref-type
 export const REF_TYPES = {
-  'disp-formula': 'formula',
+  'block-formula': 'formula',
   'figure': 'fig',
-  'fig-group': 'fig',
-  'fn': 'fn',
-  'ref': 'bibr',
+  'footnote': 'fn',
+  'refererence': 'bibr',
   'table-figure': 'table'
 }
 
@@ -19,7 +18,7 @@ export const XREF_TARGET_TYPES = Object.keys(REF_TYPES).reduce((m, type) => {
   m[refType].push(type)
   return m
 }, {
-  'table-fn': ['fn']
+  'table-fn': ['footnote']
 })
 
 export function getXrefTargets (xref) {

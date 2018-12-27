@@ -27,4 +27,17 @@ export default class ReferenceManager extends AbstractCitationManager {
     let article = doc.get('article')
     return article.references
   }
+
+  // overriding because 'reference' is just an abstract parent type
+  _detectAddRemoveCitable (op, change) {
+    if (op.isCreate() || op.isDelete()) {
+      // TODO: it would be nice to have real node instances in change
+      // to inspect the class/prototype
+      let doc = this._getDocument()
+      let schema = doc.getSchema()
+      return schema.isInstanceOf(op.val.type, 'reference')
+    } else {
+      return false
+    }
+  }
 }

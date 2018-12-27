@@ -42,16 +42,14 @@ export default class AbstractCitationManager {
         return this._updateLabels()
       // 3. xref targets have been changed
       // 4. refType of an xref has been changed (TODO: do we really need this?)
-      } else if (op.isSet() && op.path[1] === 'attributes') {
-        if (this._detectChangeRefTarget(op) || this._detectChangeRefType(op)) {
-          return this._updateLabels()
-        }
+      } else if (this._detectChangeRefTarget(op) || this._detectChangeRefType(op)) {
+        return this._updateLabels()
       }
     }
   }
 
   _detectAddRemoveXref (op) {
-    return (op.val && op.val.type === 'xref' && op.val.attributes && op.val.attributes['ref-type'] === this.refType)
+    return (op.val && op.val.type === 'xref' && op.val.refType === this.refType)
   }
 
   _detectAddRemoveCitable (op, change) {
@@ -59,17 +57,17 @@ export default class AbstractCitationManager {
   }
 
   _detectChangeRefTarget (op) {
-    if (op.path[2] === 'rid') {
-      const doc = this._getDocument()
+    if (op.path[1] === 'refTargets') {
+      let doc = this._getDocument()
       let node = doc.get(op.path[0])
-      return (node && node.getAttribute('ref-type') === this.refType)
+      return (node && node.refType === this.refType)
     } else {
       return false
     }
   }
 
   _detectChangeRefType (op) {
-    return (op.path[2] === 'ref-type' && (op.val === this.refType || op.original === this.refType))
+    return (op.path[1] === 'refType' && (op.val === this.refType || op.original === this.refType))
   }
 
   /*
@@ -105,12 +103,8 @@ export default class AbstractCitationManager {
     xrefs.forEach((xref) => {
       let isInvalid = false
       let numbers = []
-      let rids = xref.getAttribute('rid') || ''
-      rids = rids.split(' ')
-      for (let i = 0; i < rids.length; i++) {
-        const id = rids[i]
-        // skip if id empty
-        if (!id) continue
+      let targetIds = xref.refTargets
+      for (let id of targetIds) {
         // fail if there is an unknown id
         if (!refsById[id]) {
           isInvalid = true
@@ -127,7 +121,7 @@ export default class AbstractCitationManager {
       if (isInvalid) {
         // HACK: we just signal invalid references with a ?
         numbers.push('?')
-        console.warn('invalid label detected for ', xref.toXML().getNativeElement())
+        console.warn(`invalid label detected for ${xref.id}`)
       }
       xrefLabels[xref.id] = this.labelGenerator.getLabel(numbers)
     })
@@ -163,16 +157,8 @@ export default class AbstractCitationManager {
   _getXrefs () {
     // TODO: is it really a good idea to tie this implementation to 'article' here?
     const article = this._getDocument().get('article')
-    let refs = article.findAll(`xref[ref-type='${this.refType}']`)
+    let refs = article.findAll(`xref[refType='${this.refType}']`)
     return refs
-  }
-
-  _getContentElement () {
-    return null
-  }
-
-  _getCollectionElement () {
-    return null
   }
 
   _getLabelGenerator () {
