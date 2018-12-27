@@ -1,4 +1,4 @@
-import { without, documentHelpers } from 'substance'
+import { documentHelpers, includes, orderBy, without } from 'substance'
 import {
   StringModel, FlowContentModel,
   EditorAPI, InternalEditingAPI, ModelFactory
@@ -11,6 +11,7 @@ import {
   createEmptyElement, importFigurePanel, importFigures,
   insertTableFigure, setContainerSelection
 } from './articleHelpers'
+import { getXrefTargets } from './shared/xrefHelpers'
 
 export default class ArticleAPI extends EditorAPI {
   constructor (articleSession, config, archive) {
@@ -21,7 +22,6 @@ export default class ArticleAPI extends EditorAPI {
     this.article = articleSession.getDocument()
     this.archive = archive
     this._tableApi = new TableEditingAPI(articleSession)
-
     this._modelFactory = new ModelFactory(articleSession.getDocument(), this)
   }
 
@@ -382,6 +382,86 @@ export default class ArticleAPI extends EditorAPI {
   get doc () {
     console.error('DEPRECATED: use api.getArticle() instead.')
     return this.getArticle()
+  }
+
+  // TODO: how could we make this extensible via plugins?
+  // TODO: rename -> _getAvailableXrefTargets()
+  _getAvailableTargets (xrefModel) {
+    let refType = xrefModel.refType
+    let articleSession = this.getArticleSession()
+    let manager
+    switch (refType) {
+      case 'formula': {
+        manager = articleSession.getFootnoteManager()
+        break
+      }
+      case 'fig': {
+        manager = articleSession.getFigureManager()
+        break
+      }
+      case 'fn': {
+        // FIXME: bring back table-footnotes
+        // // EXPERIMENTAL:
+        // // the above mechanism does not work for table-footnotes
+        // // there we need access to the current TableFigure and get its TableFootnoteManager
+        // let tableFigure = findParentByType(xref, 'table-figure')
+        // if (tableFigure) {
+        //   return tableFigure.getFootnoteManager()
+        // }
+
+        manager = articleSession.getFootnoteManager()
+        break
+      }
+      case 'bibr': {
+        manager = articleSession.getReferenceManager()
+        break
+      }
+      case 'table': {
+        manager = articleSession.getTableManager()
+        break
+      }
+      default:
+        throw new Error('Unsupported xref type')
+    }
+    let selectedTargets = getXrefTargets(xrefModel)
+    // retrieve all possible nodes that this
+    // xref could potentially point to,
+    // so that we can let the user select from a list.
+    let availableTargets = manager.getSortedCitables().map(node => this.getModelById(node.id))
+    let targets = availableTargets.map(target => {
+      // ATTENTION: targets are not just nodes
+      // but entries with some information
+      return {
+        selected: includes(selectedTargets, target),
+        model: target,
+        id: target.id
+      }
+    })
+    // Determine broken targets (such that don't exist in the document)
+    let brokenTargets = without(selectedTargets, ...availableTargets)
+    if (brokenTargets.length > 0) {
+      targets = targets.concat(brokenTargets.map(id => {
+        return { selected: true, id }
+      }))
+    }
+    // Makes the selected targets go to top
+    targets = orderBy(targets, ['selected'], ['desc'])
+    return targets
+  }
+
+  _toggleXrefTarget (xrefModel, targetId) {
+    let targetIds = xrefModel._node.refTargets
+    let index = targetIds.indexOf(targetId)
+    let articleSession = this.getArticleSession()
+    if (index > 0) {
+      articleSession.transaction(tx => {
+        tx.update([xrefModel.id, 'refTargets'], { delete: { offset: index } })
+      })
+    } else {
+      articleSession.transaction(tx => {
+        tx.update([xrefModel.id, 'refTargets'], { insert: { offset: targetIds.length, value: targetId } })
+      })
+    }
   }
 
   _getDocument () {

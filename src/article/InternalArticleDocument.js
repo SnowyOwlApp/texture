@@ -10,7 +10,7 @@ export default class InternalArticleDocument extends Document {
   _initialize () {
     super._initialize()
 
-    // special index for xref lookup
+    // index for xref reverse lookup, i.e. all xrefs that point to a specific target
     this.addIndex('xrefs', new XrefIndex())
   }
 

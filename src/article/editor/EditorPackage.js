@@ -1,6 +1,5 @@
 /* eslint-disable no-template-curly-in-string */
 import {
-  EditInlineNodeCommand,
   EditAnnotationCommand,
   ListPackage,
   SchemaDrivenCommandManager,
@@ -11,12 +10,13 @@ import {
   BasePackage, EditorBasePackage, ModelComponentPackage, FindAndReplacePackage, CollectionComponent
 } from '../../kit'
 
+import ArticleNavPackage from '../ArticleNavPackage'
 import EntityLabelsPackage from '../shared/EntityLabelsPackage'
 import ManuscriptContentPackage from '../shared/ManuscriptContentPackage'
-// FIXME: adding this to ManuscriptContentPackage causes troubles
+import PersistencePackage from '../../PersistencePackage'
+
 import ReferenceListComponent from '../shared/ReferenceListComponent'
 import FootnoteGroupComponent from '../shared/FootnoteGroupComponent'
-
 import EditXrefTool from './EditXrefTool'
 import EditExtLinkTool from './EditExtLinkTool'
 import ManuscriptEditor from './ManuscriptEditor'
@@ -26,42 +26,40 @@ import FigurePanelComponent from '../shared/FigurePanelComponent'
 import TableFigureComponent from '../shared/TableFigureComponent'
 import FootnoteComponent from '../shared/FootnoteComponent'
 import ReferenceComponent from '../shared/ReferenceComponent'
+import AddReferenceWorkflow from '../shared/AddReferenceWorkflow'
+import EditReferenceWorkflow from './EditReferenceWorkflow'
 
-// Commands
-import DecreaseHeadingLevelCommand from './DecreaseHeadingLevelCommand'
-import IncreaseHeadingLevelCommand from './IncreaseHeadingLevelCommand'
-import InsertExtLinkCommand from './InsertExtLinkCommand'
-import InsertDispFormulaCommand from './InsertDispFormulaCommand'
-import InsertDispQuoteCommand from './InsertDispQuoteCommand'
-import InsertFootnoteCommand from '../shared/InsertFootnoteCommand'
-import RemoveFootnoteCommand from './RemoveFootnoteCommand'
-import InsertCrossReferenceCommand from './InsertCrossReferenceCommand'
-import InsertFootnoteCrossReferenceCommand from './InsertFootnoteCrossReferenceCommand'
-import InsertFigureCommand from './InsertFigureCommand'
-import InsertFigureTool from './InsertFigureTool'
 import {
   AddFigurePanelCommand, MoveFigurePanelCommand,
   RemoveFigurePanelCommand, ReplaceFigurePanelImageCommand
 } from '../shared/FigurePanelCommands'
-import UploadFigurePanelTool from '../shared/UploadFigurePanelTool'
-import InsertInlineGraphicCommand from './InsertInlineGraphicCommand'
-import InsertInlineGraphicTool from './InsertInlineGraphicTool'
-import DropFigure from './DropFigure'
-import InsertInlineFormulaCommand from './InsertInlineFormulaCommand'
-import EditDispFormulaCommand from './EditDispFormulaCommand'
-import EditDispFormulaTool from './EditDispFormulaTool'
-import EditInlineFormulaTool from './EditInlineFormulaTool'
 import {
   InsertTableCommand, InsertCellsCommand, DeleteCellsCommand,
   TableSelectAllCommand, ToggleCellHeadingCommand, ToggleCellMergeCommand
 } from './TableCommands'
+import DecreaseHeadingLevelCommand from './DecreaseHeadingLevelCommand'
+import DropFigure from './DropFigure'
+import EditDispFormulaCommand from './EditDispFormulaCommand'
+import EditDispFormulaTool from './EditDispFormulaTool'
+import EditInlineFormulaCommand from '../shared/EditInlineFormulaCommand'
+import EditInlineFormulaTool from './EditInlineFormulaTool'
+import EditXrefCommand from '../shared/EditXrefCommand'
+import IncreaseHeadingLevelCommand from './IncreaseHeadingLevelCommand'
+import InsertCrossReferenceCommand from './InsertCrossReferenceCommand'
+import InsertDispFormulaCommand from './InsertDispFormulaCommand'
+import InsertDispQuoteCommand from './InsertDispQuoteCommand'
+import InsertExtLinkCommand from './InsertExtLinkCommand'
+import InsertFigureCommand from './InsertFigureCommand'
+import InsertFigureTool from './InsertFigureTool'
+import InsertFootnoteCommand from '../shared/InsertFootnoteCommand'
+import InsertFootnoteCrossReferenceCommand from './InsertFootnoteCrossReferenceCommand'
+import InsertInlineFormulaCommand from './InsertInlineFormulaCommand'
+import InsertInlineGraphicCommand from './InsertInlineGraphicCommand'
+import InsertInlineGraphicTool from './InsertInlineGraphicTool'
 import InsertTableTool from './InsertTableTool'
 import ToggleListCommand from './ToggleListCommand'
-import ArticleNavPackage from '../ArticleNavPackage'
-import PersistencePackage from '../../PersistencePackage'
-// Workflows
-import AddReferenceWorkflow from '../shared/AddReferenceWorkflow'
-import EditReferenceWorkflow from './EditReferenceWorkflow'
+import RemoveFootnoteCommand from './RemoveFootnoteCommand'
+import UploadFigurePanelTool from '../shared/UploadFigurePanelTool'
 
 export default {
   name: 'ManscruptEditor',
@@ -92,7 +90,7 @@ export default {
     config.addComponent('toc', TOC, true)
 
     // Commands
-    config.addCommand('edit-xref', EditInlineNodeCommand, {
+    config.addCommand('edit-xref', EditXrefCommand, {
       nodeType: 'xref',
       commandGroup: 'prompt'
     })
@@ -172,7 +170,7 @@ export default {
       nodeType: 'disp-formula',
       commandGroup: 'prompt'
     })
-    config.addCommand('edit-formula', EditInlineNodeCommand, {
+    config.addCommand('edit-formula', EditInlineFormulaCommand, {
       nodeType: 'inline-formula',
       commandGroup: 'prompt'
     })

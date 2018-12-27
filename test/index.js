@@ -27,6 +27,9 @@ import './PreformatConverter.test'
 import './Table.test'
 import './TableConverter.test'
 
+// TODO: there are some tests in ./converter/. Either fix them and include here
+// or remove them
+
 platform.test = true
 
 if (platform.inNodeJS) {

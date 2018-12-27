@@ -56,8 +56,8 @@ export default class ManyRelationshipComponent extends ValueComponent {
   }
 
   getAvailableOptions () {
-    let model = this.props.model
-    return model.getAvailableTargets()
+    // FIXME: bring back values for MANY relationship
+    return []
   }
 
   _getSelectedOptions (options) {

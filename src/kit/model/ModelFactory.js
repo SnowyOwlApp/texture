@@ -57,11 +57,16 @@ export default class ModelFactory {
         } else {
           if (prop.isArray()) {
             Object.defineProperty(Model.prototype, prop.name, {
-              get () { return documentHelpers.getNodesForIds(this._node.getDocument(), this._node[prop.name]) }
+              get () {
+                let ids = this._node[prop.name]
+                return ids.map(id => api.getModelById(id))
+              }
             })
           } else {
             Object.defineProperty(Model.prototype, prop.name, {
-              get () { return this._node.getDocument().get(this._node[prop.name]) }
+              get () {
+                return api.getModelById(this._node[prop.name])
+              }
             })
           }
         }

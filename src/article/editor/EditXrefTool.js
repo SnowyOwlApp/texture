@@ -8,7 +8,7 @@ export default class EditXRefTool extends ToggleTool {
 
     let el = $$('div').addClass('sc-edit-xref-tool')
     // ATTENTION the targets are not models or nodes, but entries
-    // created by xrefHelpers.getAvailableTargets()
+    // created by xrefHelpers
     // TODO: use something more idiomatic
     for (let entry of targets) {
       const target = entry.model
@@ -41,19 +41,16 @@ export default class EditXRefTool extends ToggleTool {
   }
 
   _getAvailableTargets () {
-    const model = this._getModel()
-    return model.getAvailableTargets()
+    let model = this._getModel()
+    return this.context.api._getAvailableTargets(model)
   }
 
   _toggleTarget (targetNodeId, e) {
     // Make sure we don't follow external links
     e.preventDefault()
     e.stopPropagation()
-
-    const model = this._getModel()
-    const targets = model.toggleTarget(targetNodeId)
-
-    // Triggers a rerender
+    let model = this._getModel()
+    let targets = this.context.api._toggleXrefTarget(model, targetNodeId)
     this.setState({
       targets
     })
