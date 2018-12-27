@@ -65,7 +65,7 @@ export default class BodyConverter {
 
   export (node, el, exporter) {
     let $$ = el.createElement.bind(el)
-    const children = node.getContent()
+    const children = node.getNodes()
     let stack = [{ el }]
     for (let child of children) {
       if (child.type === 'heading') {

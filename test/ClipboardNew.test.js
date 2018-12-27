@@ -41,13 +41,13 @@ import MSW11OSXAnnotatedTextFixture from './clipboard/word-11-osx-annotated-text
 import MSW11OSXTwoParagraphsFixture from './clipboard/word-11-osx-two-paragraphs'
 import MSW11OSXExtendedFixture from './clipboard/word-11-osx-extended'
 
-const PARAGRAPH_TYPE = 'p'
+const PARAGRAPH_TYPE = 'paragraph'
 const HEADING_TYPE = 'heading'
 const LINK_TYPE = 'external-link'
 const EMPHASIS_TYPE = 'italic'
 const STRONG_TYPE = 'bold'
-const SUPERSCRIPT_TYPE = 'sup'
-const SUBSCRIPT_TYPE = 'sub'
+const SUPERSCRIPT_TYPE = 'superscript'
+const SUBSCRIPT_TYPE = 'subscript'
 const CODEBLOCK_TYPE = 'preformat'
 
 ClipboardTests()
@@ -420,7 +420,8 @@ function _twoParagraphsTest (t, html, forceWindows) {
     clipboardData.setData('text/plain', '')
     clipboardData.setData('text/html', html)
     clipboard.paste(clipboardData, context)
-    let [p1, p2, p3] = documentHelpers.getNodes(doc, ['body', 'content'])
+    let body = doc.get('body')
+    let [p1, p2, p3] = body.getNodes()
     t.equal(p1.content, '0AAA', 'First paragraph should be truncated.')
     t.equal(p2.content, 'BBB', "Second paragraph should contain 'BBB'.")
     t.equal(p3.content, '123456789', 'Remainder of original p1 should go into forth paragraph.')
@@ -435,7 +436,8 @@ function _extendedTest (t, html, forceWindows) {
     clipboardData.setData('text/html', html)
     clipboard.paste(clipboardData, context)
     // First node is a paragraph with strong, emphasis, superscript and subscript annos
-    let [node1, node2, node3] = documentHelpers.getNodes(doc, ['body', 'content'])
+    let body = doc.get('body')
+    let [node1, node2, node3] = body.getNodes()
     t.equal(node1.type, PARAGRAPH_TYPE, 'First node should be a paragraph.')
     t.equal(node1.content.length, 121, 'First paragraph should contain 121 symbols.')
     let annotationsNode1 = doc.getIndex('annotations').get([node1.id, 'content']).sort((a, b) => {

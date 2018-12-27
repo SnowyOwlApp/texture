@@ -57,7 +57,7 @@ export default class ModelFactory {
         } else {
           if (prop.isArray()) {
             Object.defineProperty(Model.prototype, prop.name, {
-              get () { return documentHelpers.getNodes(this._node.getDocument(), this._node[prop.name]) }
+              get () { return documentHelpers.getNodesForIds(this._node.getDocument(), this._node[prop.name]) }
             })
           } else {
             Object.defineProperty(Model.prototype, prop.name, {

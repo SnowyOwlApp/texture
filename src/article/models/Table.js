@@ -71,7 +71,7 @@ export default class Table extends DocumentNode {
   }
 
   getRows () {
-    return documentHelpers.getNodes(this.getDocument(), this.rows)
+    return documentHelpers.getNodesForIds(this.getDocument(), this.rows)
   }
 
   _enableCaching () {
