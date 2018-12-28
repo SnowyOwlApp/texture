@@ -11,7 +11,14 @@ export default class MetadataSection extends ModelComponent {
     if (model.type === 'collection') {
       el.append($$(CollectionEditor, { model }))
     } else {
-      // some sections are not collections
+      let label = this.getLabel(model.type)
+      let CustomEditor = this.getComponent(model.type)
+      el.append(
+        $$('div').addClass('se-heading').append(
+          $$('div').addClass('se-header').append(label)
+        ),
+        $$(CustomEditor, { model }).ref('editor')
+      )
     }
     // let ModelEditor = this.getComponent(model.type, true)
     // if (!ModelEditor) ModelEditor = isCollection ? this.getComponent('collection') : this.getComponent('entity')

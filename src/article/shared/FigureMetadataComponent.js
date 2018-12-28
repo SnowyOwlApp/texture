@@ -1,5 +1,6 @@
 import DefaultModelComponent from './DefaultModelComponent'
 import LicenseEditor from './LicenseEditor'
+import { getLabel } from './nodeHelpers'
 
 export default class FigureMetadataComponent extends DefaultModelComponent {
   _getClassNames () {
@@ -10,7 +11,7 @@ export default class FigureMetadataComponent extends DefaultModelComponent {
     const model = this.props.model
     let header = $$('div').addClass('se-header')
     header.append(
-      $$('div').addClass('se-label').text(model.getLabel())
+      $$('div').addClass('se-label').text(getLabel(model))
     )
     return header
   }
@@ -29,12 +30,23 @@ export default class FigureMetadataComponent extends DefaultModelComponent {
   }
 
   _getProperties () {
-    let model = this.props.model
-    let permission = model.getPermission()
-    let properties = model.getProperties()
-    properties = properties.filter(p => p.name !== 'permission')
-    properties = properties.concat(permission.getProperties())
-    return properties
+    // ATTENTION: we want to show permission properties like they were fields of the panel
+    if (!this._properties) {
+      // TODO: provide a helper that creates a flattened property map
+      let properties = new Map()
+      for (let [name, model] of this.props.model.getProperties()) {
+        // flatten permission
+        if (name === 'permission') {
+          for (let [_name, _model] of model) {
+            properties.set(_name, _model)
+          }
+        } else {
+          properties.set(name, model)
+        }
+      }
+      this._properties = properties
+    }
+    return this._properties
   }
 
   _showLabelForProperty (prop) {

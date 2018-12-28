@@ -9,7 +9,7 @@ export default class FigureComponent extends ModelComponent {
   render ($$) {
     let mode = this._getMode()
     let model = this.props.model
-    let panels = model.getPanelsModel()
+    let panels = model.panels
 
     let el = $$('div').addClass('sc-figure').addClass(`sm-${mode}`).attr('data-id', model.id)
 
@@ -47,9 +47,9 @@ export default class FigureComponent extends ModelComponent {
 
   _renderThumbnails ($$) {
     const model = this.props.model
-    const panels = model.getPanelsModel()
+    const panels = model.panels
     const currentIndex = this._getCurrentPanelIndex()
-    return panels.getItems().map((panel, idx) => {
+    return panels.map((panel, idx) => {
       let PanelComponent = this.getComponentForModel(panel)
       const thumbnail = $$(PanelComponent, {
         model: panel,
@@ -71,20 +71,20 @@ export default class FigureComponent extends ModelComponent {
   _getCurrentPanel () {
     let model = this.props.model
     let currentPanelIndex = this._getCurrentPanelIndex()
-    let panels = model.getPanelsModel()
-    return panels.getItemAt(currentPanelIndex)
+    let panelsCollection = model.getPanelsModel()
+    return panelsCollection.getItemAt(currentPanelIndex)
   }
 
   _getCurrentPanelIndex () {
     let model = this.props.model
     let state = model.getState()
-    let panels = model.getPanelsModel()
+    let panelsCollection = model.getPanelsModel()
     let currentPanelIndex = 0
     if (state) {
       currentPanelIndex = state.currentPanelIndex
     }
     // FIXME: state is corrupt
-    if (currentPanelIndex < 0 || currentPanelIndex >= panels.length) {
+    if (currentPanelIndex < 0 || currentPanelIndex >= panelsCollection.length) {
       console.error('figurePanel.state.currentPanelIndex is corrupt')
       state.currentPanelIndex = currentPanelIndex = 0
     }

@@ -1,7 +1,7 @@
 import { DefaultDOMElement } from 'substance'
 import { Managed } from '../../kit'
 import EditorPanel from '../shared/EditorPanel'
-import MetadataModel from '../models/MetadataModel'
+import MetadataModel from './MetadataModel'
 import MetadataSection from './MetadataSection'
 import MetadataSectionTOCEntry from './MetadataSectionTOCEntry'
 import ExperimentalArticleValidator from '../ExperimentalArticleValidator'

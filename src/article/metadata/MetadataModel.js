@@ -1,5 +1,5 @@
 // import TranslationCollectionModel from './TranslationCollectionModel'
-// import FigureCollectionModel from './FigureCollectionModel'
+import FigureCollectionModel from './FigureCollectionModel'
 // import TableCollectionModel from './TableCollectionModel'
 
 /**
@@ -25,8 +25,7 @@ export default class MetadataModel {
       // { name: 'translations', model: new TranslationCollectionModel(api) },
       // FIXME: bring back 'article-record' section
       // { name: 'article', model: api.getModelById('article-record') },
-      // FIXME: bring back figures section
-      // { name: 'figures', model: new FigureCollectionModel(api) },
+      { name: 'figures', model: new FigureCollectionModel(api) },
       // FIXME: bring back tables section
       // { name: 'tables', model: new TableCollectionModel(api) },
       { name: 'footnotes', model: articleModel.getFootnotesModel() }

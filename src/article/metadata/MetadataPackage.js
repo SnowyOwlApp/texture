@@ -42,7 +42,8 @@ export default {
     config.addComponent('subject', TranslatableEntryEditor)
     config.addComponent('translatable', TranslateableEditor)
     config.addComponent('keyword', TranslatableEntryEditor)
-    config.addComponent('figures', FiguresSectionComponent)
+    // Note: @figures is an collection view, i.e. derived from the article's content
+    config.addComponent('@figures', FiguresSectionComponent)
 
     // workflows
     config.addComponent('add-reference', AddReferenceWorkflow)
