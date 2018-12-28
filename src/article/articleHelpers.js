@@ -1,4 +1,4 @@
-import { DefaultDOMElement, importNodeIntoDocument, selectionHelpers } from 'substance'
+import { DefaultDOMElement, importNodeIntoDocument, selectionHelpers, last } from 'substance'
 import createJatsImporter from './converter/r2t/createJatsImporter'
 import { DISP_FORMULA, DISP_QUOTE, FIGURE_SNIPPET,
   FOOTNOTE_SNIPPET, PERSON_SNIPPET, TABLE_SNIPPET
@@ -68,29 +68,28 @@ export function importFigurePanel (tx, file, path) {
 }
 
 export function importFigures (tx, sel, files, paths) {
-  const LAST = files.length - 1
+  if (files.length === 0) return
+
   let containerPath = sel.containerPath
-  files.map((file, idx) => {
+  let figures = files.map((file, idx) => {
     let path = paths[idx]
-    let mimeData = file.type.split('/')
+    let mimeType = file.type
     let figure = createEmptyElement(tx, 'figure')
     let panel = tx.get(figure.panels[0])
     let graphic = panel.getContent()
-    graphic.attr({
-      'mime-subtype': mimeData[1],
-      'mimetype': mimeData[0],
-      'xlink:href': path
-    })
+    graphic.href = path
+    graphic.mimeType = mimeType
+    // Note: this is necessary because tx.insertBlockNode()
+    // selects the inserted node
+    // TODO: maybe we should change the behavior of tx.insertBlockNode()
+    // so that it is easier to insert multiple nodes in a row
     if (idx !== 0) {
       tx.break()
     }
-
     tx.insertBlockNode(figure)
-
-    if (idx === LAST) {
-      selectionHelpers.selectNode(tx, figure.id, containerPath)
-    }
+    return figure
   })
+  selectionHelpers.selectNode(tx, last(figures).id, containerPath)
 }
 
 export function insertTableFigure (tx, rows, columns) {

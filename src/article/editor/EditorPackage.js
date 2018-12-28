@@ -120,15 +120,15 @@ export default {
       commandGroup: 'insert-xref'
     })
     config.addCommand('insert-disp-formula', InsertDispFormulaCommand, {
-      nodeType: 'disp-formula',
+      nodeType: 'block-formula',
       commandGroup: 'insert'
     })
     config.addCommand('insert-disp-quote', InsertDispQuoteCommand, {
-      nodeType: 'disp-quote',
+      nodeType: 'block-quote',
       commandGroup: 'insert'
     })
     config.addCommand('insert-fig', InsertFigureCommand, {
-      nodeType: 'fig',
+      nodeType: 'figure',
       commandGroup: 'additional'
     })
     config.addCommand('add-figure-panel', AddFigurePanelCommand, {
