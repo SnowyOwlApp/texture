@@ -12,7 +12,7 @@ Notes:
 - Oliver: Get blockers out of the way
 - Melissa: All concepts should be provided in kitchen_sink XML so everyone can look and see if all needed data is captured in Dar
 - Michael: Could we acchieve some knowledge transfer, so developers at organisations get familiar with the Texture codebase and change configuration and code. Not to be dependent on Substance on each issue
-- Melissa: Knowledge transfer to vendors as eLife does not have 
+- Melissa: Knowledge transfer to vendors as eLife does not have
 - Michael: Current main goal is to get feature-complete content-wise. After that iterating on integration and conversion topcis.
 - Melissa: Important to get real content into Texture
 - Fabio: Summarizing....
