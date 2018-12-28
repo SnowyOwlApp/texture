@@ -8,6 +8,14 @@ export default class Figure extends DocumentNode {
       currentPanelIndex: 0
     }
   }
+
+  getCurrentPanelIndex () {
+    let currentPanelIndex = 0
+    if (this.state) {
+      currentPanelIndex = this.state.currentPanelIndex
+    }
+    return currentPanelIndex
+  }
 }
 Figure.schema = {
   type: 'figure',

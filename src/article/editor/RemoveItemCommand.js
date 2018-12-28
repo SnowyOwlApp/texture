@@ -17,7 +17,7 @@ export default class RemoveItemCommand extends Command {
   isDisabled (params, context) {
     const nodeType = this.config.nodeType
     const xpath = params.selectionState.xpath
-    return xpath.indexOf(nodeType) === -1
+    return !xpath.find(n => n.type === nodeType)
   }
 
   _getModelForSelection (params, context) {

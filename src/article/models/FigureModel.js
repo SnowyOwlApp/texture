@@ -1,58 +1,54 @@
-import { NodeModel, CollectionValueModel } from '../../kit'
-
-export default class FigureModel extends NodeModel {
-  hasPanels () {
-    const length = this.getPanelsLength()
-    return length > 0
-  }
-
-  getPanelsLength () {
-    return this._node.panels.length
-  }
-
-  getPanels () {
-    return new CollectionValueModel(this._api, [this._node.id, 'panels'], 'figure-panel')
-  }
-
-  getCurrentPanelIndex () {
-    const node = this._node
-    let currentPanelIndex = 0
-    if (node.state) {
-      currentPanelIndex = node.state.currentPanelIndex
+/**
+ * This extension adds some specifc API for maintaining panels.
+ * Particularly, it makes sure that the node state is updated propertly.
+ */
+export default function (GeneratedModel) {
+  return class FigureModel extends GeneratedModel {
+    getCurrentPanelIndex () {
+      return this._node.getCurrentPanelIndex()
     }
-    return currentPanelIndex
-  }
 
-  addPanel (file) {
-    const api = this._api
-    const panels = this.getPanels()
-    const index = this.getCurrentPanelIndex()
-    api._insertFigurePanel(file, panels, index)
-  }
-
-  removePanel () {
-    const api = this._api
-    const panels = this.getPanels()
-    const index = this.getCurrentPanelIndex()
-    const panel = panels.getItemAt(index)
-    api._removeFigurePanel(panel, panels)
-  }
-
-  movePanelDown () {
-    const pos = this.getCurrentPanelIndex()
-    if (pos < this.getPanelsLength()) {
-      this.movePanel(pos, pos + 1)
+    // TODO: use a record with property names here instead of an obscure 'file'
+    addPanel (file) {
+      let panelsCollection = this.getPanelsModel()
+      const currentPos = this.getCurrentPanelIndex()
+      // TODO: discuss what makes more sense
+      // insert before the current, or insert after the current panel
+      const newPos = currentPos + 1
+      return panelsCollection.insertItemAt(newPos, file, tx => {
+        tx.set([this.id, 'state', 'currentPanelIndex'], newPos)
+      })
     }
-  }
 
-  movePanelUp () {
-    const pos = this.getCurrentPanelIndex()
-    if (pos > 0) {
-      this.movePanel(pos, pos - 1)
+    removePanel () {
+      let panelsCollection = this.getPanelsModel()
+      const L = panelsCollection.length
+      const pos = this.getCurrentPanelIndex()
+      let newPos = Math.max(0, Math.min(pos, L - 2))
+      panelsCollection.removeAt(pos, tx => {
+        if (newPos !== pos) {
+          tx.set([this.id, 'state', 'currentPanelIndex'], pos - 1)
+        }
+      })
     }
-  }
 
-  movePanel (from, to) {
-    return this._api._moveFigurePanel(this, from, to)
+    movePanelDown () {
+      this._movePanel(+1)
+    }
+
+    movePanelUp () {
+      this._movePanel(-1)
+    }
+
+    _movePanel (shift) {
+      let panelsCollection = this.getPanelsModel()
+      const L = panelsCollection.length
+      const pos = this.getCurrentPanelIndex()
+      const currentPanel = panelsCollection.getItemAt(this.getCurrentPanelIndex())
+      panelsCollection.moveItem(currentPanel, shift, tx => {
+        const newPos = Math.min(L - 1, Math.max(0, pos + shift))
+        tx.set([this.id, 'state', 'currentPanelIndex'], newPos)
+      })
+    }
   }
 }

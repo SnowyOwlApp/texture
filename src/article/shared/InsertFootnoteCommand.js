@@ -5,7 +5,7 @@ import AddEntityCommand from '../metadata/AddEntityCommand'
 export default class InsertFootnoteCommand extends AddEntityCommand {
   detectScope (params) {
     const xpath = params.selectionState.xpath
-    return xpath.indexOf('table-figure') > -1 ? 'table-figure' : 'default'
+    return xpath.find(n => n.type === 'table-figure') ? 'table-figure' : 'default'
   }
 
   _getCollection (params, context) {

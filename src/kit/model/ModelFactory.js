@@ -1,11 +1,11 @@
-import { documentHelpers } from 'substance'
-import NodeModel from './NodeModel'
+import generateModelClass from './_generatModelClass'
 
 export default class ModelFactory {
-  constructor (document, api) {
+  constructor (document, api, modelRegistry) {
     this._document = document
     this._api = api
 
+    this._modelRegistry = modelRegistry || new Map()
     this._modelClassCache = new Map()
     this._modelCache = new Map()
 
@@ -40,48 +40,13 @@ export default class ModelFactory {
     let api = this._api
     let ModelClass = this._modelClassCache.get(node.type)
     if (!ModelClass) {
-      class Model extends NodeModel {}
-      let nodeSchema = node.getSchema()
-      for (let prop of nodeSchema) {
-        // skip id and type
-        if (prop.name === 'id') continue
-        Model.prototype[_modelGetter(prop.name)] = function () {
-          return this._propertyModels.get(prop.name)
-        }
-        // for primitive values add a simple getter to the node's property
-        if (!prop.isReference()) {
-          Object.defineProperty(Model.prototype, prop.name, {
-            get () { return this._node[prop.name] }
-          })
-        // for reference values resolve the underlying nodes
-        } else {
-          if (prop.isArray()) {
-            Object.defineProperty(Model.prototype, prop.name, {
-              get () {
-                let ids = this._node[prop.name]
-                return ids.map(id => api.getModelById(id))
-              }
-            })
-          } else {
-            Object.defineProperty(Model.prototype, prop.name, {
-              get () {
-                return api.getModelById(this._node[prop.name])
-              }
-            })
-          }
-        }
+      ModelClass = generateModelClass(node.getSchema())
+      if (this._modelRegistry.has(node.type)) {
+        let extension = this._modelRegistry.get(node.type)
+        ModelClass = extension(ModelClass)
       }
-      ModelClass = Model
       this._modelClassCache.set(node.type, ModelClass)
     }
     return new ModelClass(api, node)
   }
-}
-
-function _propGetter (name) {
-  return ['get', name[0].toUpperCase(), name.slice(1)].join('')
-}
-
-function _modelGetter (name) {
-  return _propGetter(name) + 'Model'
 }

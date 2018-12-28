@@ -1,7 +1,7 @@
 import { documentHelpers, includes, orderBy, without } from 'substance'
 import {
   StringModel, FlowContentModel,
-  EditorAPI, InternalEditingAPI, ModelFactory
+  EditorAPI, ModelFactory
 } from '../kit'
 import renderEntity from './shared/renderEntity'
 import TranslateableModel from './models/TranslateableModel'
@@ -22,7 +22,7 @@ export default class ArticleAPI extends EditorAPI {
     this.article = articleSession.getDocument()
     this.archive = archive
     this._tableApi = new TableEditingAPI(articleSession)
-    this._modelFactory = new ModelFactory(articleSession.getDocument(), this)
+    this._modelFactory = new ModelFactory(articleSession.getDocument(), this, config.getModelRegistry())
   }
 
   dispose () {
@@ -585,6 +585,18 @@ export default class ArticleAPI extends EditorAPI {
     })
   }
 
+  _moveCollectionItem (collectionModel, itemModel, from, to, txHook) {
+    // TODO: should we make sure that 'from' is correct?
+    const path = collectionModel.getPath()
+    this.articleSession.transaction(tx => {
+      tx.update(path, { type: 'delete', pos: from })
+      tx.update(path, { type: 'insert', pos: to, value: itemModel.id })
+      if (txHook) {
+        txHook(tx)
+      }
+    })
+  }
+
   _insertInlineGraphic (file) {
     const articleSession = this.articleSession
     const path = this.archive.createFile(file)
@@ -678,25 +690,5 @@ export default class ArticleAPI extends EditorAPI {
 
   _setSelection (selData) {
     this.articleSession.setSelection(selData)
-  }
-
-  _createInternalEditorAPI () {
-    return new InternalArticleEditingAPI()
-  }
-}
-
-class InternalArticleEditingAPI extends InternalEditingAPI {
-  createTextNode (tx, container, text) {
-    // TODO: for Container nodes we should define the default text type
-    // maybe even via a schema attribute
-    return tx.create({ type: 'p', content: text })
-  }
-
-  createListNode (tx, container, params) {
-    let el = tx.create({ type: 'list' })
-    if (params.listType) {
-      el.attr('list-type', params.listType)
-    }
-    return el
   }
 }

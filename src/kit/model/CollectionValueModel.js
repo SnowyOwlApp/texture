@@ -28,16 +28,31 @@ export default class CollectionValueModel extends _ContainerModel {
     return this.getValue()
   }
 
-  addItem (data = {}) {
+  addItem (data, txHook) {
+    let L = this.length
+    return this.insertItemAt(L, data, txHook)
+  }
+
+  insertItemAt (pos, data = {}, txHook) {
     // FIXME: here we need to seed the data
     if (!data.type) {
       data.type = this._targetTypes[0]
     }
-    return this._api.addItemToCollection(data, this)
+    return this._api.addItemToCollection(data, this, txHook)
   }
 
-  removeItem (item) {
-    return this._api.removeItemFromCollection(item, this)
+  removeItem (item, txHook) {
+    return this._api.removeItemFromCollection(item, this, txHook)
+  }
+
+  moveItem (item, shift, txHook) {
+    let ids = this.getValue()
+    let L = ids.length
+    let pos = ids.indexOf(item.id)
+    if (pos !== -1) {
+      const newPos = Math.min(L - 1, Math.max(0, pos + shift))
+      this._api._moveCollectionItem(this, item, pos, newPos, txHook)
+    }
   }
 
   get _isCollectionValueModel () {
